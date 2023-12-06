@@ -1,5 +1,5 @@
 import express from 'express';
-// import mongoMiddleware from './middleware/mongomiddleware'
+import mongoMiddleware from './middleware/mongoMiddleware'
 import router from './router/mainRouter';
 import 'dotenv/config'
 
@@ -8,7 +8,7 @@ const app = express()
 
 app.use(express.json())
 
-// app.use(mongoMiddleware)
+app.use(mongoMiddleware)
 app.use(router)
 
 app.listen(port, () => {
