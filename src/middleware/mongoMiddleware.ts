@@ -6,7 +6,7 @@ const uri = 'mongodb+srv://admin:admin@cluster0.kip1euw.mongodb.net/?retryWrites
 const mongoMiddleware = async (req: any, res: Response, next : NextFunction) => {
     try {
         const mongoClient = await new MongoClient(uri).connect();
-        const db: Db = mongoClient.db('Medify');
+        const db: Db = mongoClient.db('chatApp');
     
         req.db = db
         if(db){
