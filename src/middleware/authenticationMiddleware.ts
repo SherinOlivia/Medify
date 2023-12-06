@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import jwt, { Secret } from "jsonwebtoken";
-import JWT_TOKEN from "../config/jwtConfig"
+import JWT_TOKEN from "../config/jwtconfig"
 import { errorHandling } from "../controller/errorHandling";
 
 
