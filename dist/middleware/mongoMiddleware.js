@@ -11,7 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb_1 = require("mongodb");
 require("dotenv/config");
-const uri = 'mongodb+srv://admin:admin@cluster0.kip1euw.mongodb.net/?retryWrites=true&w=majority';
+const uri = process.env.URI;
+
 const mongoMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let client = null;
     try {
