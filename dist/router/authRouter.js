@@ -10,4 +10,3 @@ const authRouter = express_1.default.Router();
 authRouter.post('/register', registerController_1.registerUser);
 authRouter.post('/login', loginController_1.default);
 exports.default = authRouter;
-

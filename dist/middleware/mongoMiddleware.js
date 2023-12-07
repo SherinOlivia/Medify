@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb_1 = require("mongodb");
 require("dotenv/config");
 const uri = process.env.URI;
-
 const mongoMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let client = null;
     try {
