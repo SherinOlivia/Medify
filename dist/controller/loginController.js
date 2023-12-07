@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const jwtconfig_1 = __importDefault(require("../config/jwtconfig"));
 const errorHandling_1 = require("./errorHandling");
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -32,7 +31,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const passwordCheck = yield bcrypt_1.default.compare(password, user.password);
         if (passwordCheck) {
-            const token = jsonwebtoken_1.default.sign({ username: user.username, id: user._id, role: user.role }, jwtconfig_1.default);
+            const token = jsonwebtoken_1.default.sign({ username: user.username, id: user._id, role: user.role }, process.env.JWT_TOKEN);
             res.status(200).json((0, errorHandling_1.errorHandling)({
                 message: `${user.username} Successfully logged in as ${user.role}`,
                 data: token
