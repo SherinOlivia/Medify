@@ -10,11 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb_1 = require("mongodb");
+require("dotenv/config");
 const uri = 'mongodb+srv://admin:admin@cluster0.kip1euw.mongodb.net/?retryWrites=true&w=majority';
 const mongoMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    let client = null;
     try {
-        const mongoClient = yield new mongodb_1.MongoClient(uri).connect();
-        const db = mongoClient.db('Medify');
+        console.log("MongoDB Connection Test..!");
+        client = yield new mongodb_1.MongoClient(uri).connect();
+        const db = client.db('chatApp');
         req.db = db;
         if (db) {
             console.log("MongoDB Connection Succeed..!");
@@ -26,6 +29,14 @@ const mongoMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (error) {
         console.log("MongoDB Connection Failed..:", error);
+    }
+    finally {
+        res.on('finish', () => __awaiter(void 0, void 0, void 0, function* () {
+            if (client) {
+                yield client.close();
+                console.log("MongoDB Connection Closed..!");
+            }
+        }));
     }
 });
 exports.default = mongoMiddleware;
