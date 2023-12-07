@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
 import { Collection } from 'mongodb';
 import jwt, { Secret } from 'jsonwebtoken';
+import JWT_TOKEN from "../config/jwtconfig";
 import { errorHandling } from "./errorHandling";
 
 const loginUser = async (req: Request, res: Response) => {
@@ -25,7 +26,7 @@ const loginUser = async (req: Request, res: Response) => {
         const passwordCheck = await bcrypt.compare(password, user.password);
 
         if (passwordCheck) {
-            const token = jwt.sign({ username: user.username, id: user._id, role: user.role }, process.env.JWT_TOKEN as Secret);
+            const token = jwt.sign({ username: user.username, id: user._id, role: user.role }, JWT_TOKEN as Secret);
 
             res.status(200).json(errorHandling({
                 message: `${user.username} Successfully logged in as ${user.role}`,
@@ -40,4 +41,4 @@ const loginUser = async (req: Request, res: Response) => {
     }
 };
 
-export default loginUser;
+export default loginUser;
