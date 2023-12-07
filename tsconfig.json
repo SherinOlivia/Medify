@@ -107,6 +107,7 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "lib": ["ES2015"],
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "types.d.ts"],
   "exclude": ["node_modules"],
+  "files":["types.d.ts"],
 }

@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const jwtConfig_1 = __importDefault(require("../config/jwtConfig"));
+const jwtconfig_1 = __importDefault(require("../config/jwtconfig"));
 const errorHandling_1 = require("../controller/errorHandling");
 const authenMiddleware = (req, res, next) => {
     const authen = req.cookies.access_token;
@@ -15,7 +15,7 @@ const authenMiddleware = (req, res, next) => {
     // else {
     //     const secretToken = authen.split(' ')[1]
     try {
-        const decodedToken = jsonwebtoken_1.default.verify(authen, jwtConfig_1.default);
+        const decodedToken = jsonwebtoken_1.default.verify(authen, jwtconfig_1.default);
         console.log(decodedToken, `==== User's Decoded Data`);
         req.user = decodedToken;
         req.role = decodedToken.role;
