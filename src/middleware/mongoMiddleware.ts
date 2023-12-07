@@ -1,35 +1,36 @@
 import { Request, Response, NextFunction } from 'express';
-import { Db, MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 import 'dotenv/config';
 
-const uri = process.env.URI!;
+const uri: string = process.env.URI!;
 
-const mongoMiddleware = async (req: any, res: Response, next: NextFunction) => {
-    let client: MongoClient | null = null;
+const mongoMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    let client: mongoose.Mongoose | null = null;
 
     try {
-        console.log("MongoDB Connection Test..!");
-        client = await new MongoClient(uri).connect();
-        const db: Db = client.db('chatApp');
-        req.db = db;
+        console.log("MongoDB Connection Start..!");
+        client = await mongoose.connect(uri);
 
-        if (db) {
+        if (client.connection.readyState === 1) {
+            const db: mongoose.Connection = client.connection;
+            req.db = db;
+
             console.log("MongoDB Connection Succeed..!");
             next();
         } else {
             console.log("MongoDB Connection Failed...");
+            next();
         }
-
     } catch (error) {
         console.log("MongoDB Connection Failed..:", error);
-    } finally {
-        res.on('finish', async () => {
-            if (client) {
-                await client.close();
-                console.log("MongoDB Connection Closed..!");
-            }
-        });
+        next(error); 
     }
+    res.on('finish', async () => {
+        if (client) {
+            await client.connection.close();
+            console.log("MongoDB Connection Closed..!");
+        }
+    });
 };
 
 export default mongoMiddleware;
