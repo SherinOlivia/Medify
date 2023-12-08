@@ -22,8 +22,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const medicalFacilityModel_1 = __importDefault(require("./medicalFacilityModel"));
 const roles = ['medical_admin', 'doctor'];
 const specializations = ['Cardiology', 'Dermatology', 'Orthopedics', 'Neurology',
     'Pediatrics', 'Emergency Medicine', 'Internal Medicine', 'Surgery', 'Radiology',
@@ -36,7 +40,7 @@ const medicalPersonnelSchema = new mongoose_1.Schema({
     email: { type: String, required: true, minlength: 10, maxlength: 200, unique: true },
     password: { type: String, required: true, minlength: 8, maxlength: 200 },
     specialization: { type: String, required: true, enum: specializations },
-    hospital: { type: Number, required: true, },
+    hospital: { type: mongoose_1.Types.ObjectId, ref: medicalFacilityModel_1.default, required: true },
     role: { type: String, required: true, enum: roles },
 }, {
     timestamps: true,
