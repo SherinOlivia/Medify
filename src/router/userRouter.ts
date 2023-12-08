@@ -5,7 +5,7 @@ import { getUserProfile, getUserProfileByAdmin, getUsersList } from '../controll
 const userRouter = express.Router()
 
 userRouter.get('/profile', getUserProfile);
-userRouter.post('/profile/:userId', authorMiddleware(['staff','admin']), getUserProfileByAdmin);
-userRouter.post('/list', authorMiddleware(['staff','admin']), getUsersList)
+userRouter.get('/profile/:userId', authorMiddleware(['staff','admin']), getUserProfileByAdmin);
+userRouter.get('/list', authorMiddleware(['staff','admin']), getUsersList)
 
 export default userRouter;
