@@ -6,6 +6,6 @@ const userRouter = express.Router()
 
 userRouter.get('/profile', getUserProfile);
 userRouter.post('/profile/:userId', authorMiddleware(['staff','admin']), getUserProfileByAdmin);
-userRouter.post('/list', getUsersList)
+userRouter.post('/list', authorMiddleware(['staff','admin']), getUsersList)
 
 export default userRouter;

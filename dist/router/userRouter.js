@@ -9,5 +9,5 @@ const userController_1 = require("../controller/userController");
 const userRouter = express_1.default.Router();
 userRouter.get('/profile', userController_1.getUserProfile);
 userRouter.post('/profile/:userId', (0, authorizationMiddleware_1.default)(['staff', 'admin']), userController_1.getUserProfileByAdmin);
-userRouter.post('/list', userController_1.getUsersList);
+userRouter.post('/list', (0, authorizationMiddleware_1.default)(['staff', 'admin']), userController_1.getUsersList);
 exports.default = userRouter;
