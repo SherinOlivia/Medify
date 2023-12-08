@@ -8,8 +8,8 @@ const specializations = ['Cardiology', 'Dermatology', 'Orthopedics', 'Neurology'
     'Urology', 'Gastroenterology', 'Endocrinology'];
 
 const medicalPersonnelSchema = new Schema({
-    firstname: { type: String, required: true, minlength: 3, maxlength: 30 },
-    lastname: { type: String, required: true, minlength: 3, maxlength: 30 },
+    firs_name: { type: String, required: true, minlength: 3, maxlength: 30 },
+    last_name: { type: String, required: true, minlength: 3, maxlength: 30 },
     username: { type: String, required: true, minlength: 4, maxlength: 200, unique: true },
     email: { type: String, required: true, minlength: 10, maxlength: 200, unique: true },
     password: { type: String, required: true, minlength: 8, maxlength: 200 },

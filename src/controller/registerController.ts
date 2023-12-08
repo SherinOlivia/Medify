@@ -1,63 +1,67 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from 'bcrypt'
-import validator from 'validator';
-import UserModel from '../models/userModel'; 
-import MedicalPersonnelModel from '../models/medicalPersonnelModel';
-import MedicalFacilityModel from '../models/medicalFacilityModel';
+import { Collection } from 'mongodb'
+import { error } from "console";
 import { errorHandling } from "./errorHandling";
 
-const registerUser = async (req: Request, res: Response, next: NextFunction) => {
+const registerUser = async (req: Request, res:Response, next:NextFunction) => {
     try {
         const { first_name, last_name, username, email, password } = req.body;
+        const collection: Collection = req.db.collection("users");
 
-        if (!validator.isEmail(email)) {
-            return res.status(400).json(errorHandling(null, "Invalid email format"));
+        const user = await collection.findOne({ username })
+
+        if (user){
+            res.status(400).json(errorHandling(null, "Username already exists...!!"));
+            return;
         }
 
-        const existingUser = await UserModel.findOne({ username });
+        const passwordHash = await bcrypt.hash(password, 10)
 
-        if (existingUser) {
-            return res.status(400).json(errorHandling(null, "Username already exists...!!"));
-        }
-
-        const passwordHash = await bcrypt.hash(password, 10);
-
-        const newUser = await UserModel.create({ first_name, last_name, username, email, password: passwordHash, role: 'patient' });
+        const newUser = await collection.insertOne({ first_name, last_name, username, email, password: passwordHash, role:'patient' })
+        const newUserData = await collection.findOne({ _id: newUser.insertedId })
 
         res.status(200).json({
-            message: 'User successfully registered',
-            data: newUser._id,
-        });
+          message: 'User successfully registered',
+          data: newUser.insertedId,  
+        }) 
+        console.log("new user:", newUser, newUser.insertedId)
+        console.log("new Userr:", newUserData)
 
     } catch (error) {
-        res.status(500).json({ error: 'Invalid Register Request..!!' });
-        next(error);
+        res.status(500).json({ error: 'Invalid Register Request..!!'})
     }
-};
+    next(error)
+}
 
 const registerUserByAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { first_name, last_name, username, email, password, role } = req.body;
         const rolesEnum = ['staff', 'patient'];
+        const collection: Collection = req.db.collection("users");
 
         if (!rolesEnum.includes(role)) {
             return res.status(400).json(errorHandling(null, `Invalid role. Allowed roles are: ${rolesEnum.join(', ')}`));
         }
 
-        const existingUser = await UserModel.findOne({ username });
+        const user = await collection.findOne({ username });
 
-        if (existingUser) {
-            return res.status(400).json(errorHandling(null, "Username already exists...!!"));
+        if (user) {
+            res.status(400).json(errorHandling(null, "Username already exists...!!"));
+            return;
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
 
-        const newUser = await UserModel.create({ first_name, last_name, username, email, password: passwordHash, role });
+        const newUser = await collection.insertOne({ first_name, last_name, username, email, password: passwordHash, role });
+        const newUserData = await collection.findOne({ _id: newUser.insertedId });
 
         res.status(200).json({
             message: 'User successfully registered by admin',
-            data: newUser._id,
+            data: newUser.insertedId,
         });
+        console.log("new user:", newUser, newUser.insertedId);
+        console.log("new Userr:", newUserData);
 
     } catch (error) {
         res.status(500).json({ error: 'Invalid Register Request..!!' });
@@ -69,25 +73,30 @@ const registerMedicalPersonnel = async (req: Request, res: Response, next: NextF
     try {
         const { first_name, last_name, username, email, password, specialization, hospital, role } = req.body;
         const rolesEnum = ['medical_admin', 'doctor'];
+        const collection: Collection = req.db.collection("medicalPersonnels");
 
         if (!rolesEnum.includes(role)) {
             return res.status(400).json(errorHandling(null, `Invalid role. Allowed roles are: ${rolesEnum.join(', ')}`));
         }
 
-        const existingMedicalPersonnel = await MedicalPersonnelModel.findOne({ username });
+        const medicalPersonnel = await collection.findOne({ username });
 
-        if (existingMedicalPersonnel) {
-            return res.status(400).json(errorHandling(null, "Medical personnel with this username already exists...!!"));
+        if (medicalPersonnel) {
+            res.status(400).json(errorHandling(null, "Medical personnel with this username already exists...!!"));
+            return;
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
 
-        const newMedicalPersonnel = await MedicalPersonnelModel.create({ first_name, last_name, username, email, password: passwordHash, specialization, hospital, role });
+        const newMedicalPersonnel = await collection.insertOne({ first_name, last_name, username, email, password: passwordHash, specialization, hospital, role });
+        const newMedicalPersonnelData = await collection.findOne({ _id: newMedicalPersonnel.insertedId });
 
         res.status(200).json({
             message: 'Medical personnel successfully registered',
-            data: newMedicalPersonnel._id,
+            data: newMedicalPersonnel.insertedId,
         });
+        console.log("new medical personnel:", newMedicalPersonnel, newMedicalPersonnel.insertedId);
+        console.log("new Medical Personnel:", newMedicalPersonnelData);
 
     } catch (error) {
         res.status(500).json({ error: 'Invalid Register Request..!!' });
@@ -98,28 +107,29 @@ const registerMedicalPersonnel = async (req: Request, res: Response, next: NextF
 const registerMedicalFacility = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name, location, email, contact } = req.body;
+        const collection: Collection = req.db.collection("medicalFacilities");
 
-        if (!validator.isEmail(email)) {
-            return res.status(400).json(errorHandling(null, "Invalid email format"));
-        }
-
-        const existingFacility = await MedicalFacilityModel.findOne({ name });
+        const existingFacility = await collection.findOne({ name });
 
         if (existingFacility) {
             return res.status(400).json(errorHandling(null, `Medical facility with the name ${name} already exists...!!`));
         }
 
-        const newFacility = await MedicalFacilityModel.create({ name, location, email, contact });
-
+        const newFacility = await collection.insertOne({name, location, email, contact});
+        const newFacilityData = await collection.findOne({ _id: newFacility.insertedId });
         res.status(200).json({
             message: 'Medical facility successfully registered',
-            data: newFacility._id,
+            data: newFacility.insertedId,
         });
+
+        console.log("new medical facility:", newFacility, newFacility.insertedId);
+        console.log("new medical facility:", newFacilityData);
 
     } catch (error) {
         res.status(500).json({ error: 'Invalid Register Request..!!' });
         next(error);
     }
 };
+
 
 export { registerUser, registerUserByAdmin, registerMedicalPersonnel, registerMedicalFacility }

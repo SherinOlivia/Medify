@@ -4,8 +4,8 @@ import { registerUserByAdmin, registerMedicalPersonnel, registerMedicalFacility 
 
 const adminAuthRouter = express.Router()
 
-adminAuthRouter.post('/registeruser', authorMiddleware(['admin']), registerUserByAdmin);
-adminAuthRouter.post('/registerpersonnel', authorMiddleware(['staff','admin']), registerMedicalPersonnel);
-adminAuthRouter.post('/registerfacility', authorMiddleware(['admin']), registerMedicalFacility);
+adminAuthRouter.post('/admin/registeruser', authorMiddleware(['admin']), registerUserByAdmin);
+adminAuthRouter.post('/admin/registerpersonnel', authorMiddleware(['staff','admin']), registerMedicalPersonnel);
+adminAuthRouter.post('/admin/registerfacility', authorMiddleware(['admin']), registerMedicalFacility);
 
 export default adminAuthRouter;
