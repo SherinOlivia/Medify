@@ -14,16 +14,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt_1 = __importDefault(require("bcrypt"));
 require("dotenv/config");
-
-const insertAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const insertAdmin = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        if (!req || !req.db) {
+            console.error("Error!! Can't input Admin data: Request or db is undefined");
+            return;
+        }
         const adminCheck = yield req.db.collection('users').findOne({ role: 'admin' });
         if (!adminCheck) {
+            const adminFirstName = process.env.ADMIN_FIRSTNAME;
+            const adminLastName = process.env.ADMIN_LASTNAME;
             const adminUsername = process.env.ADMIN_USERNAME;
             const adminEmail = process.env.ADMIN_EMAIL;
             const adminPass = process.env.ADMIN_PASS;
             const hashedPass = yield bcrypt_1.default.hash(adminPass, 10);
             yield req.db.collection('users').insertOne({
+                first_name: adminFirstName,
+                last_name: adminLastName,
                 username: adminUsername,
                 email: adminEmail,
                 password: hashedPass,

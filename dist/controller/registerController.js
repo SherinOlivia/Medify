@@ -14,55 +14,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerMedicalFacility = exports.registerMedicalPersonnel = exports.registerUserByAdmin = exports.registerUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const console_1 = require("console");
+const validator_1 = __importDefault(require("validator"));
+const userModel_1 = __importDefault(require("../models/userModel"));
+const medicalPersonnelModel_1 = __importDefault(require("../models/medicalPersonnelModel"));
+const medicalFacilityModel_1 = __importDefault(require("../models/medicalFacilityModel"));
 const errorHandling_1 = require("./errorHandling");
 const registerUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { first_name, last_name, username, email, password } = req.body;
-        const collection = req.db.collection("users");
-        const user = yield collection.findOne({ username });
-        if (user) {
-            res.status(400).json((0, errorHandling_1.errorHandling)(null, "Username already exists...!!"));
-            return;
+        if (!validator_1.default.isEmail(email)) {
+            return res.status(400).json((0, errorHandling_1.errorHandling)(null, "Invalid email format"));
+        }
+        const existingUser = yield userModel_1.default.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json((0, errorHandling_1.errorHandling)(null, "Username already exists...!!"));
         }
         const passwordHash = yield bcrypt_1.default.hash(password, 10);
-        const newUser = yield collection.insertOne({ first_name, last_name, username, email, password: passwordHash, role: 'patient' });
-        const newUserData = yield collection.findOne({ _id: newUser.insertedId });
+        const newUser = yield userModel_1.default.create({ first_name, last_name, username, email, password: passwordHash, role: 'patient' });
         res.status(200).json({
             message: 'User successfully registered',
-            data: newUser.insertedId,
+            data: newUser._id,
         });
-        console.log("new user:", newUser, newUser.insertedId);
-        console.log("new Userr:", newUserData);
     }
     catch (error) {
         res.status(500).json({ error: 'Invalid Register Request..!!' });
+        next(error);
     }
-    next(console_1.error);
 });
 exports.registerUser = registerUser;
 const registerUserByAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { first_name, last_name, username, email, password, role } = req.body;
         const rolesEnum = ['staff', 'patient'];
-        const collection = req.db.collection("users");
         if (!rolesEnum.includes(role)) {
             return res.status(400).json((0, errorHandling_1.errorHandling)(null, `Invalid role. Allowed roles are: ${rolesEnum.join(', ')}`));
         }
-        const user = yield collection.findOne({ username });
-        if (user) {
-            res.status(400).json((0, errorHandling_1.errorHandling)(null, "Username already exists...!!"));
-            return;
+        const existingUser = yield userModel_1.default.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json((0, errorHandling_1.errorHandling)(null, "Username already exists...!!"));
         }
         const passwordHash = yield bcrypt_1.default.hash(password, 10);
-        const newUser = yield collection.insertOne({ first_name, last_name, username, email, password: passwordHash, role });
-        const newUserData = yield collection.findOne({ _id: newUser.insertedId });
+        const newUser = yield userModel_1.default.create({ first_name, last_name, username, email, password: passwordHash, role });
         res.status(200).json({
             message: 'User successfully registered by admin',
-            data: newUser.insertedId,
+            data: newUser._id,
         });
-        console.log("new user:", newUser, newUser.insertedId);
-        console.log("new Userr:", newUserData);
     }
     catch (error) {
         res.status(500).json({ error: 'Invalid Register Request..!!' });
@@ -74,24 +70,19 @@ const registerMedicalPersonnel = (req, res, next) => __awaiter(void 0, void 0, v
     try {
         const { first_name, last_name, username, email, password, specialization, hospital, role } = req.body;
         const rolesEnum = ['medical_admin', 'doctor'];
-        const collection = req.db.collection("medicalPersonnels");
         if (!rolesEnum.includes(role)) {
             return res.status(400).json((0, errorHandling_1.errorHandling)(null, `Invalid role. Allowed roles are: ${rolesEnum.join(', ')}`));
         }
-        const medicalPersonnel = yield collection.findOne({ username });
-        if (medicalPersonnel) {
-            res.status(400).json((0, errorHandling_1.errorHandling)(null, "Medical personnel with this username already exists...!!"));
-            return;
+        const existingMedicalPersonnel = yield medicalPersonnelModel_1.default.findOne({ username });
+        if (existingMedicalPersonnel) {
+            return res.status(400).json((0, errorHandling_1.errorHandling)(null, "Medical personnel with this username already exists...!!"));
         }
         const passwordHash = yield bcrypt_1.default.hash(password, 10);
-        const newMedicalPersonnel = yield collection.insertOne({ first_name, last_name, username, email, password: passwordHash, specialization, hospital, role });
-        const newMedicalPersonnelData = yield collection.findOne({ _id: newMedicalPersonnel.insertedId });
+        const newMedicalPersonnel = yield medicalPersonnelModel_1.default.create({ first_name, last_name, username, email, password: passwordHash, specialization, hospital, role });
         res.status(200).json({
             message: 'Medical personnel successfully registered',
-            data: newMedicalPersonnel.insertedId,
+            data: newMedicalPersonnel._id,
         });
-        console.log("new medical personnel:", newMedicalPersonnel, newMedicalPersonnel.insertedId);
-        console.log("new Medical Personnel:", newMedicalPersonnelData);
     }
     catch (error) {
         res.status(500).json({ error: 'Invalid Register Request..!!' });
@@ -102,19 +93,18 @@ exports.registerMedicalPersonnel = registerMedicalPersonnel;
 const registerMedicalFacility = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, location, email, contact } = req.body;
-        const collection = req.db.collection("medicalFacilities");
-        const existingFacility = yield collection.findOne({ name });
+        if (!validator_1.default.isEmail(email)) {
+            return res.status(400).json((0, errorHandling_1.errorHandling)(null, "Invalid email format"));
+        }
+        const existingFacility = yield medicalFacilityModel_1.default.findOne({ name });
         if (existingFacility) {
             return res.status(400).json((0, errorHandling_1.errorHandling)(null, `Medical facility with the name ${name} already exists...!!`));
         }
-        const newFacility = yield collection.insertOne({ name, location, email, contact });
-        const newFacilityData = yield collection.findOne({ _id: newFacility.insertedId });
+        const newFacility = yield medicalFacilityModel_1.default.create({ name, location, email, contact });
         res.status(200).json({
             message: 'Medical facility successfully registered',
-            data: newFacility.insertedId,
+            data: newFacility._id,
         });
-        console.log("new medical facility:", newFacility, newFacility.insertedId);
-        console.log("new medical facility:", newFacilityData);
     }
     catch (error) {
         res.status(500).json({ error: 'Invalid Register Request..!!' });
