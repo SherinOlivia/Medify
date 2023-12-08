@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const authRouter_1 = __importDefault(require("./authRouter"));
 const adminAuthRouter_1 = __importDefault(require("./adminAuthRouter"));
-// import userrouter from './userRouter';
+const userRouter_1 = __importDefault(require("./userRouter"));
 const authenticationMiddleware_1 = __importDefault(require("../middleware/authenticationMiddleware"));
 const router = express_1.default.Router();
 router.get("/", function (req, res) {
@@ -15,7 +15,7 @@ router.get("/", function (req, res) {
         message: "Hello, this is Medify! Group [e]'s Final Project!"
     });
 });
-router.use('/api/auth', authRouter_1.default);
-router.use('/api/admin/auth', authenticationMiddleware_1.default, adminAuthRouter_1.default);
-// router.use('/api/users', userrouter)
+router.use('/api/v1/auth', authRouter_1.default);
+router.use('/api/v1/admin/auth', authenticationMiddleware_1.default, adminAuthRouter_1.default);
+router.use('/api/v1/users', authenticationMiddleware_1.default, userRouter_1.default);
 exports.default = router;

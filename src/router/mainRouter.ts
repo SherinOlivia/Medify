@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import authRouter from './authRouter';
 import adminAuthRouter from './adminAuthRouter'
-// import userrouter from './userRouter';
+import userRouter from './userRouter';
 import authenMiddleware from '../middleware/authenticationMiddleware';
 
 const router = express.Router();
@@ -13,8 +13,8 @@ router.get("/", function (req: Request, res: Response) {
     })
 })
 
-router.use('/api/auth', authRouter)
-router.use('/api/admin/auth', authenMiddleware, adminAuthRouter)
-// router.use('/api/users', userrouter)
+router.use('/api/v1/auth', authRouter)
+router.use('/api/v1/admin/auth', authenMiddleware, adminAuthRouter)
+router.use('/api/v1/users', authenMiddleware, userRouter)
 
 export default router;
