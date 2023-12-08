@@ -9,4 +9,5 @@ const loginController_1 = require("../controller/loginController");
 const authRouter = express_1.default.Router();
 authRouter.post('/register', registerController_1.registerUser);
 authRouter.post('/login', loginController_1.loginUser);
+authRouter.post('/logout', loginController_1.logoutUser);
 exports.default = authRouter;
