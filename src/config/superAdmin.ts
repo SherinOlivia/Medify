@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import 'dotenv/config';
+import UserModel from '../models/userModel';
 
 const insertAdmin = async (req?: Request | undefined) => {
     try {
@@ -9,7 +10,7 @@ const insertAdmin = async (req?: Request | undefined) => {
             return;
         }
 
-        const adminCheck = await req.db.collection('users').findOne({ role: 'admin' });
+        const adminCheck = await UserModel.findOne({ role: 'admin' });
 
         if (!adminCheck) {
             const adminFirstName = process.env.ADMIN_FIRSTNAME;
@@ -19,14 +20,16 @@ const insertAdmin = async (req?: Request | undefined) => {
             const adminPass = process.env.ADMIN_PASS;
             const hashedPass = await bcrypt.hash(adminPass!, 10);
 
-            await req.db.collection('users').insertOne({
-                first_name: adminFirstName,
-                last_name: adminLastName,
+            const newAdmin = new UserModel({
+                firstname: adminFirstName,
+                lastname: adminLastName,
                 username: adminUsername,
                 email: adminEmail,
                 password: hashedPass,
                 role: 'admin'
             });
+
+            await newAdmin.save();
 
             console.log("Admin Account successfully created! Welcome!");
         } else {

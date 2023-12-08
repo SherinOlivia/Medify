@@ -14,13 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt_1 = __importDefault(require("bcrypt"));
 require("dotenv/config");
+const userModel_1 = __importDefault(require("../models/userModel"));
 const insertAdmin = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req || !req.db) {
             console.error("Error!! Can't input Admin data: Request or db is undefined");
             return;
         }
-        const adminCheck = yield req.db.collection('users').findOne({ role: 'admin' });
+        const adminCheck = yield userModel_1.default.findOne({ role: 'admin' });
         if (!adminCheck) {
             const adminFirstName = process.env.ADMIN_FIRSTNAME;
             const adminLastName = process.env.ADMIN_LASTNAME;
@@ -28,14 +29,15 @@ const insertAdmin = (req) => __awaiter(void 0, void 0, void 0, function* () {
             const adminEmail = process.env.ADMIN_EMAIL;
             const adminPass = process.env.ADMIN_PASS;
             const hashedPass = yield bcrypt_1.default.hash(adminPass, 10);
-            yield req.db.collection('users').insertOne({
-                first_name: adminFirstName,
-                last_name: adminLastName,
+            const newAdmin = new userModel_1.default({
+                firstname: adminFirstName,
+                lastname: adminLastName,
                 username: adminUsername,
                 email: adminEmail,
                 password: hashedPass,
                 role: 'admin'
             });
+            yield newAdmin.save();
             console.log("Admin Account successfully created! Welcome!");
         }
         else {
