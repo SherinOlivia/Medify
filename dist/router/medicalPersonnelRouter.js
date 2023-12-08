@@ -7,6 +7,6 @@ const express_1 = __importDefault(require("express"));
 const medicalPersonnelController_1 = require("../controller/medicalPersonnelController");
 const medicalPersonnelRouter = express_1.default.Router();
 medicalPersonnelRouter.get('/profile', medicalPersonnelController_1.getMedicalPersonnelProfile);
-medicalPersonnelRouter.post('/profile/:doctorId', medicalPersonnelController_1.getDoctorProfile);
-medicalPersonnelRouter.post('/list', medicalPersonnelController_1.getDoctorsList);
+medicalPersonnelRouter.get('/profile/:doctorId', medicalPersonnelController_1.getDoctorProfile);
+medicalPersonnelRouter.get('/list', medicalPersonnelController_1.getDoctorsList);
 exports.default = medicalPersonnelRouter;

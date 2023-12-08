@@ -8,6 +8,6 @@ const authorizationMiddleware_1 = __importDefault(require("../middleware/authori
 const userController_1 = require("../controller/userController");
 const userRouter = express_1.default.Router();
 userRouter.get('/profile', userController_1.getUserProfile);
-userRouter.post('/profile/:userId', (0, authorizationMiddleware_1.default)(['staff', 'admin']), userController_1.getUserProfileByAdmin);
-userRouter.post('/list', (0, authorizationMiddleware_1.default)(['staff', 'admin']), userController_1.getUsersList);
+userRouter.get('/profile/:userId', (0, authorizationMiddleware_1.default)(['staff', 'admin']), userController_1.getUserProfileByAdmin);
+userRouter.get('/list', (0, authorizationMiddleware_1.default)(['staff', 'admin']), userController_1.getUsersList);
 exports.default = userRouter;
