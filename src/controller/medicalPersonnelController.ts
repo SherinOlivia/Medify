@@ -51,7 +51,6 @@ const getMedicalPersonnelProfile = async (req: Request, res: Response) => {
     }
 };
 
-// List Medical Personnel
 const getDoctorsList = async (req: Request, res: Response) => {
     try {
         const doctors = await MedicalPersonnelModel.find({ role: 'doctor' });

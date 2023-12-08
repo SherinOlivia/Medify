@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUsersList = exports.getUserProfile = exports.getUserProfileByAdmin = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
 const errorHandling_1 = require("./errorHandling");
-// User Profile for Admin/Staff Access
 const getUserProfileByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.params.userId;
@@ -36,7 +35,6 @@ const getUserProfileByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.getUserProfileByAdmin = getUserProfileByAdmin;
-// User Profile for Regular User Access
 const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -61,7 +59,6 @@ const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getUserProfile = getUserProfile;
-// User List
 const getUsersList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield userModel_1.default.find();

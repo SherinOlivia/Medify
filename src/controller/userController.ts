@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import UserModel from '../models/userModel';
 import { errorHandling } from './errorHandling';
 
-// User Profile for Admin/Staff Access
 const getUserProfileByAdmin = async (req: Request, res: Response) => {
     try {
         const userId = req.params.userId;
@@ -25,7 +24,6 @@ const getUserProfileByAdmin = async (req: Request, res: Response) => {
     }
 };
 
-// User Profile for Regular User Access
 const getUserProfile = async (req: Request, res: Response) => {
     try {
         const userId = req.user?.id;
@@ -53,7 +51,6 @@ const getUserProfile = async (req: Request, res: Response) => {
     }
 };
 
-// User List
 const getUsersList = async (req: Request, res: Response) => {
     try {
         const users = await UserModel.find();

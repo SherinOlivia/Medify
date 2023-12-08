@@ -59,7 +59,6 @@ const getMedicalPersonnelProfile = (req, res) => __awaiter(void 0, void 0, void 
     }
 });
 exports.getMedicalPersonnelProfile = getMedicalPersonnelProfile;
-// List Medical Personnel
 const getDoctorsList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const doctors = yield medicalPersonnelModel_1.default.find({ role: 'doctor' });
