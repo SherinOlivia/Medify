@@ -15,7 +15,7 @@ cookieMiddleware(app)
 app.use(router)
 
 // super admin account:
-app.post('/setupAdmin', async (req, res) => {
+app.post('/setupadmin', async (req, res) => {
   await insertAdmin(req);
   res.status(200).send('Admin setup complete');
 });
