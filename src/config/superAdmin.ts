@@ -21,8 +21,8 @@ const insertAdmin = async (req?: Request | undefined) => {
             const hashedPass = await bcrypt.hash(adminPass!, 10);
 
             const newAdmin = new UserModel({
-                firstname: adminFirstName,
-                lastname: adminLastName,
+                first_name: adminFirstName,
+                last_name: adminLastName,
                 username: adminUsername,
                 email: adminEmail,
                 password: hashedPass,
@@ -33,7 +33,7 @@ const insertAdmin = async (req?: Request | undefined) => {
 
             console.log("Admin Account successfully created! Welcome!");
         } else {
-            console.log("Reminder: Admin already exists");
+            console.log("Reminder: Admin already exists", adminCheck);
             return;
         }
     } catch (error) {

@@ -30,8 +30,8 @@ const insertAdmin = (req) => __awaiter(void 0, void 0, void 0, function* () {
             const adminPass = process.env.ADMIN_PASS;
             const hashedPass = yield bcrypt_1.default.hash(adminPass, 10);
             const newAdmin = new userModel_1.default({
-                firstname: adminFirstName,
-                lastname: adminLastName,
+                first_name: adminFirstName,
+                last_name: adminLastName,
                 username: adminUsername,
                 email: adminEmail,
                 password: hashedPass,
@@ -41,7 +41,7 @@ const insertAdmin = (req) => __awaiter(void 0, void 0, void 0, function* () {
             console.log("Admin Account successfully created! Welcome!");
         }
         else {
-            console.log("Reminder: Admin already exists");
+            console.log("Reminder: Admin already exists", adminCheck);
             return;
         }
     }
