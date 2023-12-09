@@ -25,7 +25,7 @@ app.use(mongoMiddleware_1.default);
 (0, cookieMiddleware_1.default)(app);
 app.use(mainRouter_1.default);
 // super admin account:
-app.post('/setupAdmin', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/setupadmin', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, superAdmin_1.default)(req);
     res.status(200).send('Admin setup complete');
 }));
