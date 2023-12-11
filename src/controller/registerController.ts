@@ -97,7 +97,7 @@ const registerMedicalPersonnel = async (req: Request, res: Response, next: NextF
 
 const registerMedicalFacility = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { name, location, email, contact } = req.body;
+        const { name, email, address, contact, location } = req.body;
 
         if (!validator.isEmail(email)) {
             return res.status(400).json(errorHandling(null, "Invalid email format"));
@@ -109,7 +109,7 @@ const registerMedicalFacility = async (req: Request, res: Response, next: NextFu
             return res.status(400).json(errorHandling(null, `Medical facility with the name ${name} already exists...!!`));
         }
 
-        const newFacility = await MedicalFacilityModel.create({ name, location, email, contact });
+        const newFacility = await MedicalFacilityModel.create({ name, email, address, contact, location });
 
         res.status(200).json({
             message: 'Medical facility successfully registered',
