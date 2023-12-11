@@ -2,7 +2,7 @@ import mongoose, { Schema, Types } from 'mongoose';
 import MedicalFacilityModel from './medicalFacilityModel';
 
 const roles = ['medical_admin', 'doctor'];
-const specializations = ['Cardiology', 'Dermatology', 'Orthopedics', 'Neurology',
+const specializations = ["Administration",'Cardiology', 'Dermatology', 'Orthopedics', 'Neurology',
     'Pediatrics', 'Emergency Medicine', 'Internal Medicine', 'Surgery', 'Radiology',
     'Ophthalmology', 'Obstetrics and Gynecology', 'Psychiatry', 'Anesthesiology', 'Oncology',
     'Urology', 'Gastroenterology', 'Endocrinology'];

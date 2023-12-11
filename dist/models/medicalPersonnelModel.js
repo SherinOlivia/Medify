@@ -29,7 +29,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const medicalFacilityModel_1 = __importDefault(require("./medicalFacilityModel"));
 const roles = ['medical_admin', 'doctor'];
-const specializations = ['Cardiology', 'Dermatology', 'Orthopedics', 'Neurology',
+const specializations = ["Administration", 'Cardiology', 'Dermatology', 'Orthopedics', 'Neurology',
     'Pediatrics', 'Emergency Medicine', 'Internal Medicine', 'Surgery', 'Radiology',
     'Ophthalmology', 'Obstetrics and Gynecology', 'Psychiatry', 'Anesthesiology', 'Oncology',
     'Urology', 'Gastroenterology', 'Endocrinology'];

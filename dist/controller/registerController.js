@@ -92,7 +92,7 @@ const registerMedicalPersonnel = (req, res, next) => __awaiter(void 0, void 0, v
 exports.registerMedicalPersonnel = registerMedicalPersonnel;
 const registerMedicalFacility = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, location, email, contact } = req.body;
+        const { name, email, address, contact, location } = req.body;
         if (!validator_1.default.isEmail(email)) {
             return res.status(400).json((0, errorHandling_1.errorHandling)(null, "Invalid email format"));
         }
@@ -100,7 +100,7 @@ const registerMedicalFacility = (req, res, next) => __awaiter(void 0, void 0, vo
         if (existingFacility) {
             return res.status(400).json((0, errorHandling_1.errorHandling)(null, `Medical facility with the name ${name} already exists...!!`));
         }
-        const newFacility = yield medicalFacilityModel_1.default.create({ name, location, email, contact });
+        const newFacility = yield medicalFacilityModel_1.default.create({ name, email, address, contact, location });
         res.status(200).json({
             message: 'Medical facility successfully registered',
             data: newFacility._id,
