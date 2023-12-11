@@ -4,6 +4,7 @@ import authRouter from './authRouter';
 import adminAuthRouter from './adminAuthRouter'
 import userRouter from './userRouter';
 import medicalPersonnelRouter from './medicalPersonnelRouter';
+import medicalFacilityRouter from './medicalFacilityRouter';
 
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.use('/api/v1/auth', authRouter)
 router.use('/api/v1/admin/auth', authenMiddleware, adminAuthRouter)
 router.use('/api/v1/user', authenMiddleware, userRouter)
 router.use('/api/v1/medic', authenMiddleware, medicalPersonnelRouter)
+router.use('/api/v1/facility', authenMiddleware, medicalFacilityRouter)
 
 export default router;
