@@ -38,6 +38,9 @@ dependencies:
   node-cache:
     specifier: ^5.1.2
     version: 5.1.2
+  nodemailer:
+    specifier: ^6.9.7
+    version: 6.9.7
   validator:
     specifier: ^13.11.0
     version: 13.11.0
@@ -58,6 +61,9 @@ devDependencies:
   '@types/node':
     specifier: ^20.10.3
     version: 20.10.3
+  '@types/nodemailer':
+    specifier: ^6.4.14
+    version: 6.4.14
   '@types/validator':
     specifier: ^13.11.7
     version: 13.11.7
@@ -165,6 +171,12 @@ packages:
     resolution: {integrity: sha512-XJavIpZqiXID5Yxnxv3RUDKTN5b81ddNC3ecsA0SoFXz/QU8OGBwZGMomiq0zw+uuqbL/krztv/DINAQ/EV4gg==}
     dependencies:
       undici-types: 5.26.5
+
+  /@types/nodemailer@6.4.14:
+    resolution: {integrity: sha512-fUWthHO9k9DSdPCSPRqcu6TWhYyxTBg382vlNIttSe9M7XfsT06y0f24KHXtbnijPGGRIcVvdKHTNikOI6qiHA==}
+    dependencies:
+      '@types/node': 20.10.3
+    dev: true
 
   /@types/qs@6.9.10:
     resolution: {integrity: sha512-3Gnx08Ns1sEoCrWssEgTSJs/rsT2vhGP+Ja9cnnk9k4ALxinORlQneLXFeFKOTJMOeZUFD1s7w+w2AphTpvzZw==}
@@ -1115,6 +1127,11 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    dev: false
+
+  /nodemailer@6.9.7:
+    resolution: {integrity: sha512-rUtR77ksqex/eZRLmQ21LKVH5nAAsVicAtAYudK7JgwenEDZ0UIQ1adUGqErz7sMkWYxWTTU1aeP2Jga6WQyJw==}
+    engines: {node: '>=6.0.0'}
     dev: false
 
   /nodemon@3.0.2:
