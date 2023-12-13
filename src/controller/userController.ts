@@ -32,7 +32,7 @@ const getUserProfile = async (req: Request, res: Response) => {
             return res.status(403).json(errorHandling(null, 'Access Forbidden.'));
         }
 
-        const user = await UserModel.findById(userId);
+        const user = await UserModel.findById(userId).select('-password');
 
         if (user) {
             return res.status(200).json(
@@ -53,13 +53,39 @@ const getUserProfile = async (req: Request, res: Response) => {
 
 const getUsersList = async (req: Request, res: Response) => {
     try {
-        const users = await UserModel.find();
+        const users = await UserModel.find().select('-password');
 
-        return res.status(200).json({ users });
+        return res.status(200).json(
+            errorHandling({
+                message: "User List",
+                data: users
+            },
+            null)
+        );;
     } catch (error) {
         console.error(error);
         return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
     }
 };
 
-export { getUserProfileByAdmin, getUserProfile, getUsersList };
+const updateUser = async (req: Request, res: Response) => {
+    const id = req.params.userId
+
+    try {
+        const user = await UserModel.findByIdAndUpdate(id, 
+            {$set: req.body},
+            {new: true}
+        );
+
+        res.status(200).json({
+            message: 'Data successfully Updated',
+            data: user,
+        });
+
+    } catch (error) {
+        return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
+    }
+}
+
+
+export { getUserProfileByAdmin, getUserProfile, getUsersList, updateUser };

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsersList = exports.getUserProfile = exports.getUserProfileByAdmin = void 0;
+exports.updateUser = exports.getUsersList = exports.getUserProfile = exports.getUserProfileByAdmin = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
 const errorHandling_1 = require("./errorHandling");
 const getUserProfileByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -42,7 +42,7 @@ const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (!userId) {
             return res.status(403).json((0, errorHandling_1.errorHandling)(null, 'Access Forbidden.'));
         }
-        const user = yield userModel_1.default.findById(userId);
+        const user = yield userModel_1.default.findById(userId).select('-password');
         if (user) {
             return res.status(200).json((0, errorHandling_1.errorHandling)({
                 message: `${user.username}'s Profile`,
@@ -61,8 +61,12 @@ const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.getUserProfile = getUserProfile;
 const getUsersList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield userModel_1.default.find();
-        return res.status(200).json({ users });
+        const users = yield userModel_1.default.find().select('-password');
+        return res.status(200).json((0, errorHandling_1.errorHandling)({
+            message: "User List",
+            data: users
+        }, null));
+        ;
     }
     catch (error) {
         console.error(error);
@@ -70,3 +74,17 @@ const getUsersList = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getUsersList = getUsersList;
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.userId;
+    try {
+        const user = yield userModel_1.default.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+        res.status(200).json({
+            message: 'Data successfully Updated',
+            data: user,
+        });
+    }
+    catch (error) {
+        return res.status(500).json((0, errorHandling_1.errorHandling)(null, 'Internal Server Error.'));
+    }
+});
+exports.updateUser = updateUser;
