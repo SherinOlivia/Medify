@@ -9,4 +9,5 @@ const medicalPersonnelRouter = express_1.default.Router();
 medicalPersonnelRouter.get('/profile', medicalPersonnelController_1.getMedicalPersonnelProfile);
 medicalPersonnelRouter.get('/profile/:doctorId', medicalPersonnelController_1.getDoctorProfile);
 medicalPersonnelRouter.get('/list', medicalPersonnelController_1.getDoctorsList);
+medicalPersonnelRouter.put('/update/:personnelId', medicalPersonnelController_1.updatePersonnel);
 exports.default = medicalPersonnelRouter;
