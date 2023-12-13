@@ -5,39 +5,43 @@ import JWT_TOKEN from '../config/jwtconfig';
 import UserModel from '../models/userModel';
 import { errorHandling } from './errorHandling';
 import NodeCache from 'node-cache';
+import MedicalPersonnelModel from '../models/medicalPersonnelModel';
 
 const failedLoginAttemptsCache = new NodeCache({ stdTTL: 600 });
 
 const loginUser = async (req: Request, res: Response) => {
     try {
         const { usernameOrEmail, password } = req.body;
-        let existingUser;
-
+        let userData = null;
+        
+        const userEmail = await UserModel.findOne({ email: usernameOrEmail })
+        const userUsername = await UserModel.findOne({ username: usernameOrEmail })
+        const personnelEmail = await MedicalPersonnelModel.findOne({ email: usernameOrEmail })
+        const personnelUsername = await MedicalPersonnelModel.findOne({ username: usernameOrEmail })
+        
         if (usernameOrEmail.includes('@')) {
-            existingUser = await UserModel.findOne({ email: usernameOrEmail });
+            userData = userEmail || personnelEmail;
         } else {
-            existingUser = await UserModel.findOne({ username: usernameOrEmail });
+            userData = userUsername || personnelUsername;
         }
 
         const failedAttempts = failedLoginAttemptsCache.get<number>(usernameOrEmail);
-
-        console.log(existingUser);
 
         if (failedAttempts !== undefined && failedAttempts >= 5) {
             return res.status(400).json(errorHandling('Too many failed login attempts', null));
         }
 
-        if (existingUser) {
-            const passwordCheck = await bcrypt.compare(password, existingUser.password);
+        if (userData) {
+            const passwordCheck = await bcrypt.compare(password, userData.password);
 
             if (passwordCheck) {
                 let refreshToken = req.cookies.refresh_token;
 
                 if (!refreshToken) {
-                    refreshToken = jwt.sign({ username: existingUser.username, id: existingUser._id, role: existingUser.role }, JWT_TOKEN as Secret, { expiresIn: '7d' });
+                    refreshToken = jwt.sign({ username: userData.username, id: userData._id, role: userData.role }, JWT_TOKEN as Secret, { expiresIn: '7d' });
                 }
 
-                const accessToken = jwt.sign({ username: existingUser.username, id: existingUser._id, role: existingUser.role }, JWT_TOKEN as Secret, { expiresIn: '24h' });
+                const accessToken = jwt.sign({ username: userData.username, id: userData._id, role: userData.role }, JWT_TOKEN as Secret, { expiresIn: '24h' });
 
                 // Reset limit login
                 failedLoginAttemptsCache.del(usernameOrEmail);
@@ -60,11 +64,14 @@ const loginUser = async (req: Request, res: Response) => {
                     sameSite: 'none',
                     secure: true,
                 });
+                
+                userData.password = undefined!;
 
                 return res.status(200).json(
                     errorHandling({
-                        message: `${existingUser.username} Successfully logged in as ${existingUser.role}`,
-                        data: accessToken,
+                        message: `${userData.username} Successfully logged in as ${userData.role}`,
+                        data: userData,
+                        accessToken,
                         accessTokenExpiration,
                         refreshToken,
                         refreshTokenExpiration,
@@ -74,7 +81,7 @@ const loginUser = async (req: Request, res: Response) => {
             } else {
                 const newFailedAttempts = (failedAttempts || 0) + 1;
                 failedLoginAttemptsCache.set(usernameOrEmail, newFailedAttempts);
-                return res.status(400).json(errorHandling(null, 'Password is incorrect'));
+                return res.status(400).json(errorHandling(null, 'Incorrect Password or Username/Email'));
             }
         } else {
             return res.status(400).json(errorHandling(null, 'User not found. Please check your credentials.'));
