@@ -37,8 +37,8 @@ const registerUser = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         });
     }
     catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Invalid Register Request..!!' });
-        next(error);
     }
 });
 exports.registerUser = registerUser;
@@ -61,8 +61,8 @@ const registerUserByAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0
         });
     }
     catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Invalid Register Request..!!' });
-        next(error);
     }
 });
 exports.registerUserByAdmin = registerUserByAdmin;
@@ -85,8 +85,8 @@ const registerMedicalPersonnel = (req, res, next) => __awaiter(void 0, void 0, v
         });
     }
     catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Invalid Register Request..!!' });
-        next(error);
     }
 });
 exports.registerMedicalPersonnel = registerMedicalPersonnel;
@@ -107,8 +107,8 @@ const registerMedicalFacility = (req, res, next) => __awaiter(void 0, void 0, vo
         });
     }
     catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Invalid Register Request..!!' });
-        next(error);
     }
 });
 exports.registerMedicalFacility = registerMedicalFacility;
