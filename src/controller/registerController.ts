@@ -30,8 +30,8 @@ const registerUser = async (req: Request, res: Response, next: NextFunction) => 
         });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Invalid Register Request..!!' });
-        next(error);
     }
 };
 
@@ -60,8 +60,8 @@ const registerUserByAdmin = async (req: Request, res: Response, next: NextFuncti
         });
 
     } catch (error) {
+        console.error(error); 
         res.status(500).json({ error: 'Invalid Register Request..!!' });
-        next(error);
     }
 };
 
@@ -90,8 +90,8 @@ const registerMedicalPersonnel = async (req: Request, res: Response, next: NextF
         });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Invalid Register Request..!!' });
-        next(error);
     }
 };
 
@@ -117,8 +117,8 @@ const registerMedicalFacility = async (req: Request, res: Response, next: NextFu
         });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Invalid Register Request..!!' });
-        next(error);
     }
 };
 
