@@ -68,6 +68,23 @@ const getDoctorsList = async (req: Request, res: Response) => {
     }
 };
 
+const getPersonnelsList = async (req: Request, res: Response) => {
+    try {
+        const personnels = await MedicalPersonnelModel.find().select('-password');
+
+        return res.status(200).json(
+            errorHandling({
+                message: "List of Medical Personnels",
+                data: personnels
+            },
+            null)
+        );
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
+    }
+};
+
 const updatePersonnel = async (req: Request, res: Response) => {
     const id = req.params.personnelId
 
@@ -87,4 +104,4 @@ const updatePersonnel = async (req: Request, res: Response) => {
     }
 }
 
-export { getDoctorProfile, getMedicalPersonnelProfile, getDoctorsList, updatePersonnel };
+export { getDoctorProfile, getMedicalPersonnelProfile, getDoctorsList, getPersonnelsList, updatePersonnel };

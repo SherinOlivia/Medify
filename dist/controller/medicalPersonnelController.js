@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePersonnel = exports.getDoctorsList = exports.getMedicalPersonnelProfile = exports.getDoctorProfile = void 0;
+exports.updatePersonnel = exports.getPersonnelsList = exports.getDoctorsList = exports.getMedicalPersonnelProfile = exports.getDoctorProfile = void 0;
 const medicalPersonnelModel_1 = __importDefault(require("../models/medicalPersonnelModel"));
 const errorHandling_1 = require("./errorHandling");
 const getDoctorProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -73,6 +73,20 @@ const getDoctorsList = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getDoctorsList = getDoctorsList;
+const getPersonnelsList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const personnels = yield medicalPersonnelModel_1.default.find().select('-password');
+        return res.status(200).json((0, errorHandling_1.errorHandling)({
+            message: "List of Medical Personnels",
+            data: personnels
+        }, null));
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json((0, errorHandling_1.errorHandling)(null, 'Internal Server Error.'));
+    }
+});
+exports.getPersonnelsList = getPersonnelsList;
 const updatePersonnel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.personnelId;
     try {
