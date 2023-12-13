@@ -17,7 +17,7 @@ const createAppointment = async (req: Request, res: Response) => {
         const parsedDate = new Date(date);
         const formattedDate = format(parsedDate, 'yyyy-MM-dd HH:mm:ss');
 
-        const medicalFacility = await MedicalFacilityModel.findById({ hospital });
+        const medicalFacility = await MedicalFacilityModel.findById(hospital);
 
         if (!medicalFacility) {
             return res.status(404).json(
@@ -50,17 +50,18 @@ const createAppointment = async (req: Request, res: Response) => {
 
 const updateAppointment = async (req: Request, res: Response) => {
     const id = req.params.appointmentId
+    const user = req.user
 
     try {
         const appointment = await AppointmentModel.findById(id);
         const medicalFacility = await MedicalFacilityModel.findOne();
-        const medicalPersonnel = await MedicalPersonnelModel.findById(req.user?.id);
+        const medicalPersonnel = await MedicalPersonnelModel.findById(user.id);
 
         if (!appointment) {
             return res.status(404).json(errorHandling(null, 'Appointment not found.'));
         }
 
-        if (medicalPersonnel!.role !== 'medical_admin' && appointment.status !== 'pending') {
+        if (medicalPersonnel?.role !== 'medical_admin' && appointment.status !== 'pending') {
             return res.status(403).json(
                 errorHandling(
                     null,
@@ -82,6 +83,7 @@ const updateAppointment = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
+        console.error(error)
         return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
     }
 }
@@ -91,13 +93,16 @@ const getAppointmentList = async (req: Request, res: Response) => {
     let appointments = null;
     try {
         if (user.role === "patient") {
-            appointments = await AppointmentModel.find({ patient: user._id });
+            appointments = await AppointmentModel.find({ patient: user.id });
         } else if (user.role === "medical_admin") {
-            appointments = await AppointmentModel.find({ hospital: user.hospital });
+            const personnel = await MedicalPersonnelModel.findById(user.id)
+            appointments = await AppointmentModel.find({ hospital: personnel?.hospital });
+            console.log("user:", user, "personnel:", personnel, "hospital id:", personnel?.hospital)
         } else if (user.role === "doctor") { 
+            const personnel = await MedicalPersonnelModel.findById(user.id)
             appointments = await AppointmentModel.find({
-                hospital: user.hospital,
-                doctor: user._id,
+                hospital: personnel?.hospital,
+                doctor: personnel?.id,
                 status: { $in: ['scheduled', 'completed'] },
             });
         } else if (user?.role === 'staff' || user?.role === 'admin') {
@@ -114,15 +119,16 @@ const getAppointmentList = async (req: Request, res: Response) => {
             null)
         );
     } catch (error) {
+        console.error(error)
         return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
     }
-
 }
 
 const cancelAppointment = async (req: Request, res: Response) => {
     const id = req.params.appointmentId;
     const { status } = req.body;
     const user = req.user;
+
     try {
         const appointment = await AppointmentModel.findById(id);
 
@@ -148,6 +154,7 @@ const cancelAppointment = async (req: Request, res: Response) => {
             });}
       
     } catch (error) {
+        console.error(error)
         return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
     }
 };
@@ -163,18 +170,19 @@ const updateAppointmentStatus = async (req: Request, res: Response) => {
             return res.status(404).json(errorHandling(null, 'Appointment not found.'));
         }
 
-            const updatedAppointment = await AppointmentModel.findByIdAndUpdate(
-                id,
-                { $set: { status } },
-                { new: true }
-            );
+        const updatedAppointment = await AppointmentModel.findByIdAndUpdate(
+            id,
+            { $set: { status } },
+            { new: true }
+        );
 
-            return res.status(200).json({
-                message: 'Appointment Status successfully updated',
-                data: updatedAppointment,
-            });
+        return res.status(200).json({
+            message: 'Appointment Status successfully updated',
+            data: updatedAppointment,
+        });
        
     } catch (error) {
+        console.error(error)
         return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
     }
 };

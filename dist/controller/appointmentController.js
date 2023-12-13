@@ -28,7 +28,7 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         const parsedDate = new Date(date);
         const formattedDate = (0, date_fns_1.format)(parsedDate, 'yyyy-MM-dd HH:mm:ss');
-        const medicalFacility = yield medicalFacilityModel_1.default.findById({ hospital });
+        const medicalFacility = yield medicalFacilityModel_1.default.findById(hospital);
         if (!medicalFacility) {
             return res.status(404).json((0, errorHandling_1.errorHandling)(null, 'Medical facility not not found.'));
         }
@@ -53,26 +53,28 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.createAppointment = createAppointment;
 const updateAppointment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d;
+    var _c;
     const id = req.params.appointmentId;
+    const user = req.user;
     try {
         const appointment = yield appointmentModel_1.default.findById(id);
         const medicalFacility = yield medicalFacilityModel_1.default.findOne();
-        const medicalPersonnel = yield medicalPersonnelModel_1.default.findById((_c = req.user) === null || _c === void 0 ? void 0 : _c.id);
+        const medicalPersonnel = yield medicalPersonnelModel_1.default.findById(user.id);
         if (!appointment) {
             return res.status(404).json((0, errorHandling_1.errorHandling)(null, 'Appointment not found.'));
         }
-        if (medicalPersonnel.role !== 'medical_admin' && appointment.status !== 'pending') {
+        if ((medicalPersonnel === null || medicalPersonnel === void 0 ? void 0 : medicalPersonnel.role) !== 'medical_admin' && appointment.status !== 'pending') {
             return res.status(403).json((0, errorHandling_1.errorHandling)(null, `Scheduled Appointment cannot be updated. Please contact our medical team through live chat, call ${medicalFacility === null || medicalFacility === void 0 ? void 0 : medicalFacility.contact}, or email us at ${medicalFacility === null || medicalFacility === void 0 ? void 0 : medicalFacility.email}. We will get back to you as soon as possible!`));
         }
         const updatedAppointment = yield appointmentModel_1.default.findByIdAndUpdate(id, { $set: req.body }, { new: true });
         res.status(200).json({
             message: 'Appointment details successfully Updated',
             data: updatedAppointment,
-            location: (medicalFacility === null || medicalFacility === void 0 ? void 0 : medicalFacility.name) + ', ' + ((_d = medicalFacility === null || medicalFacility === void 0 ? void 0 : medicalFacility.location) === null || _d === void 0 ? void 0 : _d.city),
+            location: (medicalFacility === null || medicalFacility === void 0 ? void 0 : medicalFacility.name) + ', ' + ((_c = medicalFacility === null || medicalFacility === void 0 ? void 0 : medicalFacility.location) === null || _c === void 0 ? void 0 : _c.city),
         });
     }
     catch (error) {
+        console.error(error);
         return res.status(500).json((0, errorHandling_1.errorHandling)(null, 'Internal Server Error.'));
     }
 });
@@ -82,15 +84,18 @@ const getAppointmentList = (req, res) => __awaiter(void 0, void 0, void 0, funct
     let appointments = null;
     try {
         if (user.role === "patient") {
-            appointments = yield appointmentModel_1.default.find({ patient: user._id });
+            appointments = yield appointmentModel_1.default.find({ patient: user.id });
         }
         else if (user.role === "medical_admin") {
-            appointments = yield appointmentModel_1.default.find({ hospital: user.hospital });
+            const personnel = yield medicalPersonnelModel_1.default.findById(user.id);
+            appointments = yield appointmentModel_1.default.find({ hospital: personnel === null || personnel === void 0 ? void 0 : personnel.hospital });
+            console.log("user:", user, "personnel:", personnel, "hospital id:", personnel === null || personnel === void 0 ? void 0 : personnel.hospital);
         }
         else if (user.role === "doctor") {
+            const personnel = yield medicalPersonnelModel_1.default.findById(user.id);
             appointments = yield appointmentModel_1.default.find({
-                hospital: user.hospital,
-                doctor: user._id,
+                hospital: personnel === null || personnel === void 0 ? void 0 : personnel.hospital,
+                doctor: personnel === null || personnel === void 0 ? void 0 : personnel.id,
                 status: { $in: ['scheduled', 'completed'] },
             });
         }
@@ -106,6 +111,7 @@ const getAppointmentList = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }, null));
     }
     catch (error) {
+        console.error(error);
         return res.status(500).json((0, errorHandling_1.errorHandling)(null, 'Internal Server Error.'));
     }
 });
@@ -133,6 +139,7 @@ const cancelAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
     }
     catch (error) {
+        console.error(error);
         return res.status(500).json((0, errorHandling_1.errorHandling)(null, 'Internal Server Error.'));
     }
 });
@@ -152,6 +159,7 @@ const updateAppointmentStatus = (req, res) => __awaiter(void 0, void 0, void 0, 
         });
     }
     catch (error) {
+        console.error(error);
         return res.status(500).json((0, errorHandling_1.errorHandling)(null, 'Internal Server Error.'));
     }
 });
