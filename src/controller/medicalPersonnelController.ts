@@ -5,7 +5,7 @@ import { errorHandling } from './errorHandling';
 const getDoctorProfile = async (req: Request, res: Response) => {
     try {
         const doctorId = req.params.doctorId;
-        const doctor = await MedicalPersonnelModel.findById(doctorId);
+        const doctor = await MedicalPersonnelModel.findById(doctorId).select('-password');
 
         if (doctor) {
             return res.status(200).json(
@@ -32,7 +32,7 @@ const getMedicalPersonnelProfile = async (req: Request, res: Response) => {
             return res.status(403).json(errorHandling(null, 'Forbidden Access'));
         }
 
-        const medicalPersonnel = await MedicalPersonnelModel.findById(medicalPersonnelId);
+        const medicalPersonnel = await MedicalPersonnelModel.findById(medicalPersonnelId).select('-password');
 
         if (medicalPersonnel) {
             return res.status(200).json(
@@ -53,7 +53,7 @@ const getMedicalPersonnelProfile = async (req: Request, res: Response) => {
 
 const getDoctorsList = async (req: Request, res: Response) => {
     try {
-        const doctors = await MedicalPersonnelModel.find({ role: 'doctor' });
+        const doctors = await MedicalPersonnelModel.find({ role: 'doctor' }).select('-password');
 
         return res.status(200).json(
             errorHandling({
@@ -68,4 +68,40 @@ const getDoctorsList = async (req: Request, res: Response) => {
     }
 };
 
-export { getDoctorProfile, getMedicalPersonnelProfile, getDoctorsList };
+const getPersonnelsList = async (req: Request, res: Response) => {
+    try {
+        const personnels = await MedicalPersonnelModel.find().select('-password');
+
+        return res.status(200).json(
+            errorHandling({
+                message: "List of Medical Personnels",
+                data: personnels
+            },
+            null)
+        );
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
+    }
+};
+
+const updatePersonnel = async (req: Request, res: Response) => {
+    const id = req.params.personnelId
+
+    try {
+        const personnel = await MedicalPersonnelModel.findByIdAndUpdate(id, 
+            {$set: req.body},
+            {new: true}
+        );
+
+        res.status(200).json({
+            message: 'Data successfully Updated',
+            data: personnel,
+        });
+
+    } catch (error) {
+        return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
+    }
+}
+
+export { getDoctorProfile, getMedicalPersonnelProfile, getDoctorsList, getPersonnelsList, updatePersonnel };

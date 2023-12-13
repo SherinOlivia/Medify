@@ -5,20 +5,19 @@ import NodeCache from 'node-cache';
 import UserModel from '../models/userModel';
 import { errorHandling } from './errorHandling';
 import nodemailer from 'nodemailer';
+import 'dotenv/config'
 
 const resetPasswordCache = new NodeCache({ stdTTL: 300 });
 
-const NODEMAILER_MAIL = process.env.NODEMAILER_MAIL;
-const NODEMAILER_PASS = process.env.NODEMAILER_PASS;
-
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-        user: NODEMAILER_MAIL,
-        pass: NODEMAILER_PASS,
+        user: process.env.NODEMAILER_MAIL,
+        pass: process.env.NODEMAILER_PASS,
     },
 });
-
 
 const resetPasswordRequest = async (req: Request, res: Response) => {
   try {
@@ -36,12 +35,13 @@ const resetPasswordRequest = async (req: Request, res: Response) => {
 
     const resetKey = Math.random().toString(36).substring(2, 15);
     resetPasswordCache.set(resetKey, email);
+    const link = process.env.LINK
 
     const mailOptions = {
-      from: 'your-email@gmail.com',
+      from: process.env.NODEMAILER_MAIL,
       to: email,
       subject: 'Password Reset',
-      html: `<p>Click the following link to reset your password: <a href="http://localhost:5000/reset-password?token=${resetKey}">Reset Password</a></p>`,
+      html: `<p>Click the following link to reset your password: <a href="${link}/api/v1/auth/resetpassword?token=${resetKey}">Reset Password</a></p>`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -62,7 +62,7 @@ const resetPasswordRequest = async (req: Request, res: Response) => {
 const resetPassword = async (req: Request, res: Response) => {
   try {
     const { password } = req.body;
-    const resetKey = req.query.resetKey as string;
+    const resetKey = req.query.token as string;
     const email = resetPasswordCache.get(resetKey);
 
     if (!email) {

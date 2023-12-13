@@ -1,10 +1,6 @@
 import express, { Request, Response } from 'express';
 import authenMiddleware from '../middleware/authenticationMiddleware';
-import authRouter from './authRouter';
-import adminAuthRouter from './adminAuthRouter'
-import userRouter from './userRouter';
-import medicalPersonnelRouter from './medicalPersonnelRouter';
-import medicalFacilityRouter from './medicalFacilityRouter';
+import { adminAuthRouter, appointmentRouter, authRouter, medicalFacilityRouter, medicalPersonnelRouter, userRouter } from '../router';
 
 const router = express.Router();
 
@@ -20,5 +16,6 @@ router.use('/api/v1/admin/auth', authenMiddleware, adminAuthRouter)
 router.use('/api/v1/user', authenMiddleware, userRouter)
 router.use('/api/v1/medic', authenMiddleware, medicalPersonnelRouter)
 router.use('/api/v1/facility', authenMiddleware, medicalFacilityRouter)
+router.use('/api/v1/appointment', authenMiddleware, appointmentRouter)
 
 export default router;
