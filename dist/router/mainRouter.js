@@ -19,4 +19,5 @@ router.use('/api/v1/user', authenticationMiddleware_1.default, router_1.userRout
 router.use('/api/v1/medic', authenticationMiddleware_1.default, router_1.medicalPersonnelRouter);
 router.use('/api/v1/facility', authenticationMiddleware_1.default, router_1.medicalFacilityRouter);
 router.use('/api/v1/appointment', authenticationMiddleware_1.default, router_1.appointmentRouter);
+router.use('/api/v1/report', authenticationMiddleware_1.default, router_1.medicalReportRouter);
 exports.default = router;

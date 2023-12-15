@@ -5,3 +5,4 @@ export { default as medicalPersonnelRouter } from './medicalPersonnelRouter'
 export { default as userRouter } from './userRouter'
 
 export { default as appointmentRouter } from './appointmentRouter'
+export { default as medicalReportRouter } from './medicalReportRouter'
