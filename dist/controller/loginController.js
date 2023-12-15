@@ -37,7 +37,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const failedAttempts = failedLoginAttemptsCache.get(usernameOrEmail);
         if (failedAttempts !== undefined && failedAttempts >= 5) {
-            return res.status(400).json((0, errorHandling_1.errorHandling)('Too many failed login attempts', null));
+            return res.status(400).json((0, errorHandling_1.errorHandling)(null, 'Too many failed login attempts'));
         }
         if (userData) {
             const passwordCheck = yield bcrypt_1.default.compare(password, userData.password);

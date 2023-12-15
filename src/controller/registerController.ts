@@ -23,15 +23,16 @@ const registerUser = async (req: Request, res: Response, next: NextFunction) => 
         const passwordHash = await bcrypt.hash(password, 10);
 
         const newUser = await UserModel.create({ first_name, last_name, username, email, password: passwordHash, role: 'patient' });
+        const newUserData = await UserModel.findById(newUser._id).select('-password')
 
-        res.status(200).json({
+        return res.status(200).json(errorHandling({
             message: 'User successfully registered',
-            data: newUser._id,
-        });
-
+            data: newUserData,
+        }, null));
+        
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Invalid Register Request..!!' });
+        return res.status(500).json(errorHandling(null, 'Invalid Register Request..!!'));
     }
 };
 
@@ -53,11 +54,12 @@ const registerUserByAdmin = async (req: Request, res: Response, next: NextFuncti
         const passwordHash = await bcrypt.hash(password, 10);
 
         const newUser = await UserModel.create({ first_name, last_name, username, email, password: passwordHash, role });
+        const newUserData = await UserModel.findById(newUser._id).select('-password')
 
-        res.status(200).json({
+        res.status(200).json(errorHandling({
             message: 'User successfully registered by admin',
-            data: newUser._id,
-        });
+            data: newUserData,
+        }, null ));
 
     } catch (error) {
         console.error(error); 
@@ -83,10 +85,11 @@ const registerMedicalPersonnel = async (req: Request, res: Response, next: NextF
         const passwordHash = await bcrypt.hash(password, 10);
 
         const newMedicalPersonnel = await MedicalPersonnelModel.create({ first_name, last_name, username, email, password: passwordHash, specialization, hospital, role });
+        const newMedicalPersonnelData = await MedicalPersonnelModel.findById(newMedicalPersonnel._id).select('-password');
 
         res.status(200).json({
             message: 'Medical personnel successfully registered',
-            data: newMedicalPersonnel._id,
+            data: newMedicalPersonnelData,
         });
 
     } catch (error) {
@@ -110,10 +113,11 @@ const registerMedicalFacility = async (req: Request, res: Response, next: NextFu
         }
 
         const newFacility = await MedicalFacilityModel.create({ name, email, address, contact, location });
+        const newFacilityData = await MedicalFacilityModel.findById(newFacility._id);
 
         res.status(200).json({
             message: 'Medical facility successfully registered',
-            data: newFacility._id,
+            data: newFacilityData,
         });
 
     } catch (error) {

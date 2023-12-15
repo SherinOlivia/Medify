@@ -31,14 +31,15 @@ const registerUser = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         }
         const passwordHash = yield bcrypt_1.default.hash(password, 10);
         const newUser = yield userModel_1.default.create({ first_name, last_name, username, email, password: passwordHash, role: 'patient' });
-        res.status(200).json({
+        const newUserData = yield userModel_1.default.findById(newUser._id).select('-password');
+        return res.status(200).json((0, errorHandling_1.errorHandling)({
             message: 'User successfully registered',
-            data: newUser._id,
-        });
+            data: newUserData,
+        }, null));
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Invalid Register Request..!!' });
+        return res.status(500).json((0, errorHandling_1.errorHandling)(null, 'Invalid Register Request..!!'));
     }
 });
 exports.registerUser = registerUser;
@@ -55,10 +56,11 @@ const registerUserByAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0
         }
         const passwordHash = yield bcrypt_1.default.hash(password, 10);
         const newUser = yield userModel_1.default.create({ first_name, last_name, username, email, password: passwordHash, role });
-        res.status(200).json({
+        const newUserData = yield userModel_1.default.findById(newUser._id).select('-password');
+        res.status(200).json((0, errorHandling_1.errorHandling)({
             message: 'User successfully registered by admin',
-            data: newUser._id,
-        });
+            data: newUserData,
+        }, null));
     }
     catch (error) {
         console.error(error);
@@ -79,9 +81,10 @@ const registerMedicalPersonnel = (req, res, next) => __awaiter(void 0, void 0, v
         }
         const passwordHash = yield bcrypt_1.default.hash(password, 10);
         const newMedicalPersonnel = yield medicalPersonnelModel_1.default.create({ first_name, last_name, username, email, password: passwordHash, specialization, hospital, role });
+        const newMedicalPersonnelData = yield medicalPersonnelModel_1.default.findById(newMedicalPersonnel._id).select('-password');
         res.status(200).json({
             message: 'Medical personnel successfully registered',
-            data: newMedicalPersonnel._id,
+            data: newMedicalPersonnelData,
         });
     }
     catch (error) {
@@ -101,9 +104,10 @@ const registerMedicalFacility = (req, res, next) => __awaiter(void 0, void 0, vo
             return res.status(400).json((0, errorHandling_1.errorHandling)(null, `Medical facility with the name ${name} already exists...!!`));
         }
         const newFacility = yield medicalFacilityModel_1.default.create({ name, email, address, contact, location });
+        const newFacilityData = yield medicalFacilityModel_1.default.findById(newFacility._id);
         res.status(200).json({
             message: 'Medical facility successfully registered',
-            data: newFacility._id,
+            data: newFacilityData,
         });
     }
     catch (error) {
