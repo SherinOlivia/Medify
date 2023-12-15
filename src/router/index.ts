@@ -1,5 +1,5 @@
 export { default as authRouter } from './authRouter'
-export { default as adminAuthRouter } from './adminAuthRouter'
+export { default as adminRouter } from './adminRouter'
 export { default as medicalFacilityRouter } from './medicalFacilityRouter'
 export { default as medicalPersonnelRouter } from './medicalPersonnelRouter'
 export { default as userRouter } from './userRouter'

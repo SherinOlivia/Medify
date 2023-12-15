@@ -10,5 +10,6 @@ const userRouter = express_1.default.Router();
 userRouter.get('/profile', userController_1.getUserProfile);
 userRouter.get('/profile/:userId', (0, authorizationMiddleware_1.default)(['staff', 'admin']), userController_1.getUserProfileByAdmin);
 userRouter.get('/list', (0, authorizationMiddleware_1.default)(['staff', 'admin']), userController_1.getUsersList);
-userRouter.put('/update/:userId', userController_1.updateUser);
+userRouter.get('/patient/list', (0, authorizationMiddleware_1.default)(['staff', 'admin']), userController_1.getPatientsList);
+userRouter.put('/update', userController_1.updateUser);
 exports.default = userRouter;

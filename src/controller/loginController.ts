@@ -28,7 +28,7 @@ const loginUser = async (req: Request, res: Response) => {
         const failedAttempts = failedLoginAttemptsCache.get<number>(usernameOrEmail);
 
         if (failedAttempts !== undefined && failedAttempts >= 5) {
-            return res.status(400).json(errorHandling('Too many failed login attempts', null));
+            return res.status(400).json(errorHandling(null, 'Too many failed login attempts'));
         }
 
         if (userData) {
@@ -67,16 +67,14 @@ const loginUser = async (req: Request, res: Response) => {
                 
                 userData.password = undefined!;
 
-                return res.status(200).json(
-                    errorHandling({
+                return res.status(200).json(errorHandling({
                         message: `${userData.username} Successfully logged in as ${userData.role}`,
                         data: userData,
                         accessToken,
                         accessTokenExpiration,
                         refreshToken,
                         refreshTokenExpiration,
-                    },
-                    null)
+                    }, null)
                 );
             } else {
                 const newFailedAttempts = (failedAttempts || 0) + 1;

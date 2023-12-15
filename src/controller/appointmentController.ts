@@ -34,13 +34,11 @@ const createAppointment = async (req: Request, res: Response) => {
             category
         });
 
-        return res.status(201).json(
-            errorHandling({
+        return res.status(201).json(errorHandling({
                 message: 'Appointment successfully created',
                 data: appointment,
                 location: medicalFacility.name + ', ' + medicalFacility.location?.city,
-            }, null)
-        );
+            }, null));
 
     } catch (error) {
         console.error(error);
@@ -62,12 +60,9 @@ const updateAppointment = async (req: Request, res: Response) => {
         }
 
         if (medicalPersonnel?.role !== 'medical_admin' && appointment.status !== 'pending') {
-            return res.status(403).json(
-                errorHandling(
-                    null,
+            return res.status(403).json(errorHandling(null,
                     `Scheduled Appointment cannot be updated. Please contact our medical team through live chat, call ${medicalFacility?.contact}, or email us at ${medicalFacility?.email}. We will get back to you as soon as possible!`
-                )
-            );
+                ));
         }
         
         const updatedAppointment = await AppointmentModel.findByIdAndUpdate(
@@ -76,11 +71,11 @@ const updateAppointment = async (req: Request, res: Response) => {
             { new: true }
         );
 
-        res.status(200).json({
-            message: 'Appointment details successfully Updated',
-            data: updatedAppointment,
-            location: medicalFacility?.name + ', ' + medicalFacility?.location?.city,
-        });
+        return res.status(200).json(errorHandling({
+                message: 'Appointment details successfully Updated',
+                data: updatedAppointment,
+                location: medicalFacility?.name + ', ' + medicalFacility?.location?.city,
+            }, null));
 
     } catch (error) {
         console.error(error)
@@ -94,30 +89,33 @@ const getAppointmentList = async (req: Request, res: Response) => {
     try {
         if (user.role === "patient") {
             appointments = await AppointmentModel.find({ patient: user.id });
+
         } else if (user.role === "medical_admin") {
             const personnel = await MedicalPersonnelModel.findById(user.id)
+
             appointments = await AppointmentModel.find({ hospital: personnel?.hospital });
-            console.log("user:", user, "personnel:", personnel, "hospital id:", personnel?.hospital)
+
         } else if (user.role === "doctor") { 
             const personnel = await MedicalPersonnelModel.findById(user.id)
+
             appointments = await AppointmentModel.find({
                 hospital: personnel?.hospital,
                 doctor: personnel?.id,
-                status: { $in: ['scheduled', 'completed'] },
-            });
+                status: ['scheduled', 'completed'],
+            });            
+
         } else if (user?.role === 'staff' || user?.role === 'admin') {
             appointments = await AppointmentModel.find();
+
         } else {
             return res.status(403).json(errorHandling(null, 'Forbidden Access'));
         }
     
-        return res.status(200).json(
-            errorHandling({
+        return res.status(200).json(errorHandling({
                 message: 'List of Appointments',
                 data: appointments,
-            },
-            null)
-        );
+            }, null));
+            
     } catch (error) {
         console.error(error)
         return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
@@ -143,15 +141,14 @@ const cancelAppointment = async (req: Request, res: Response) => {
                 { new: true }
             );
 
-            return res.status(200).json({
-                message: 'Appointment Successfully Cancelled..',
-                data: updatedAppointment,
-            });
+            return res.status(200).json(errorHandling({
+                    message: 'Appointment Successfully Cancelled..',
+                    data: updatedAppointment,
+                }, null));
 
         }  else {
-               return res.status(404).json({
-                message: `Mr/Ms.${user.last_name} has yet to book an appointment..`
-            });}
+               return res.status(404).json(errorHandling(null, `Mr/Ms.${user.last_name} has yet to book an appointment..`));    
+        }
       
     } catch (error) {
         console.error(error)
@@ -176,10 +173,10 @@ const updateAppointmentStatus = async (req: Request, res: Response) => {
             { new: true }
         );
 
-        return res.status(200).json({
-            message: 'Appointment Status successfully updated',
-            data: updatedAppointment,
-        });
+        return res.status(200).json(errorHandling({
+                message: 'Appointment Status successfully updated',
+                data: updatedAppointment,
+            }, null));
        
     } catch (error) {
         console.error(error)
