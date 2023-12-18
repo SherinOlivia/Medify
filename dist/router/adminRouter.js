@@ -11,5 +11,5 @@ const adminRouter = express_1.default.Router();
 adminRouter.post('/auth/registeruser', (0, authorizationMiddleware_1.default)(['admin']), registerController_1.registerUserByAdmin);
 adminRouter.post('/auth/registerpersonnel', (0, authorizationMiddleware_1.default)(['staff', 'admin']), registerController_1.registerMedicalPersonnel);
 adminRouter.post('/auth/registerfacility', (0, authorizationMiddleware_1.default)(['admin']), registerController_1.registerMedicalFacility);
-adminRouter.post('/dashboard', (0, authorizationMiddleware_1.default)(['staff', 'admin']), adminDashboardController_1.adminDashboard);
+adminRouter.get('/dashboard', (0, authorizationMiddleware_1.default)(['staff', 'admin']), adminDashboardController_1.adminDashboard);
 exports.default = adminRouter;
