@@ -9,6 +9,6 @@ adminRouter.post('/auth/registeruser', authorMiddleware(['admin']), registerUser
 adminRouter.post('/auth/registerpersonnel', authorMiddleware(['staff','admin']), registerMedicalPersonnel);
 adminRouter.post('/auth/registerfacility', authorMiddleware(['admin']), registerMedicalFacility);
 
-adminRouter.post('/dashboard', authorMiddleware(['staff','admin']), adminDashboard);
+adminRouter.get('/dashboard', authorMiddleware(['staff','admin']), adminDashboard);
 
 export default adminRouter;

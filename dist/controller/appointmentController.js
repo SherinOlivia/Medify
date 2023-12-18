@@ -18,12 +18,13 @@ const appointmentModel_1 = __importDefault(require("../models/appointmentModel")
 const errorHandling_1 = require("./errorHandling");
 const medicalFacilityModel_1 = __importDefault(require("../models/medicalFacilityModel"));
 const medicalPersonnelModel_1 = __importDefault(require("../models/medicalPersonnelModel"));
+const userModel_1 = __importDefault(require("../models/userModel"));
 const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
-        const patient = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+        const patientId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
         const { doctor, hospital, category, date, description } = req.body;
-        if (!patient || !doctor || !hospital || !category || !date || !description) {
+        if (!patientId || !doctor || !hospital || !category || !date || !description) {
             return res.status(400).json((0, errorHandling_1.errorHandling)(null, 'Invalid appointment data.'));
         }
         const parsedDate = new Date(date);
@@ -33,16 +34,28 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
             return res.status(404).json((0, errorHandling_1.errorHandling)(null, 'Medical facility not not found.'));
         }
         const appointment = yield appointmentModel_1.default.create({
-            patient,
+            patient: patientId,
             doctor,
             hospital,
             date: formattedDate,
             description,
             category
         });
+        const patientData = yield userModel_1.default.findById(patientId);
+        const doctorData = yield medicalPersonnelModel_1.default.findById(doctor);
+        const appointmentData = {
+            _id: appointment._id,
+            patient: (patientData === null || patientData === void 0 ? void 0 : patientData.first_name) + " " + (patientData === null || patientData === void 0 ? void 0 : patientData.last_name),
+            doctor: (doctorData === null || doctorData === void 0 ? void 0 : doctorData.first_name) + " " + (doctorData === null || doctorData === void 0 ? void 0 : doctorData.last_name),
+            hospital: medicalFacility === null || medicalFacility === void 0 ? void 0 : medicalFacility.name,
+            date: appointment.date,
+            description: appointment.description,
+            category: appointment.category,
+            status: appointment.status,
+        };
         return res.status(201).json((0, errorHandling_1.errorHandling)({
             message: 'Appointment successfully created',
-            data: appointment,
+            data: appointmentData,
             location: medicalFacility.name + ', ' + ((_b = medicalFacility.location) === null || _b === void 0 ? void 0 : _b.city),
         }, null));
     }
@@ -104,9 +117,26 @@ const getAppointmentList = (req, res) => __awaiter(void 0, void 0, void 0, funct
         else {
             return res.status(403).json((0, errorHandling_1.errorHandling)(null, 'Forbidden Access'));
         }
+        const appointmentData = [];
+        for (const appointment of appointments) {
+            const doctor = yield medicalPersonnelModel_1.default.findById(appointment.doctor);
+            const patient = yield userModel_1.default.findById(appointment.patient);
+            const hospital = yield medicalFacilityModel_1.default.findById(appointment.hospital);
+            const formattedAppointment = {
+                _id: appointment._id,
+                patient: (patient === null || patient === void 0 ? void 0 : patient.first_name) + " " + (patient === null || patient === void 0 ? void 0 : patient.last_name),
+                doctor: (doctor === null || doctor === void 0 ? void 0 : doctor.first_name) + " " + (doctor === null || doctor === void 0 ? void 0 : doctor.last_name),
+                hospital: hospital === null || hospital === void 0 ? void 0 : hospital.name,
+                date: appointment.date,
+                description: appointment.description,
+                category: appointment.category,
+                status: appointment.status,
+            };
+            appointmentData.push(formattedAppointment);
+        }
         return res.status(200).json((0, errorHandling_1.errorHandling)({
             message: 'List of Appointments',
-            data: appointments,
+            data: appointmentData,
         }, null));
     }
     catch (error) {
