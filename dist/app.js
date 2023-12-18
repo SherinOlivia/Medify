@@ -13,16 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongoMiddleware_1 = __importDefault(require("./middleware/mongoMiddleware"));
 const mainRouter_1 = __importDefault(require("./router/mainRouter"));
 require("dotenv/config");
 const superAdmin_1 = __importDefault(require("./config/superAdmin"));
-const cookieMiddleware_1 = __importDefault(require("./middleware/cookieMiddleware"));
+const middleware_1 = __importDefault(require("./middleware"));
 const port = process.env.PORT;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use(mongoMiddleware_1.default);
-(0, cookieMiddleware_1.default)(app);
+(0, middleware_1.default)(app);
 app.use(mainRouter_1.default);
 // super admin account:
 app.post('/setupadmin', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
