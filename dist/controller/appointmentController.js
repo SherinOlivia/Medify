@@ -47,7 +47,7 @@ const createAppointment = (req, res) => __awaiter(void 0, void 0, void 0, functi
             _id: appointment._id,
             patient: (patientData === null || patientData === void 0 ? void 0 : patientData.first_name) + " " + (patientData === null || patientData === void 0 ? void 0 : patientData.last_name),
             doctor: (doctorData === null || doctorData === void 0 ? void 0 : doctorData.first_name) + " " + (doctorData === null || doctorData === void 0 ? void 0 : doctorData.last_name),
-            hospital: hospital === null || hospital === void 0 ? void 0 : hospital.name,
+            hospital: medicalFacility === null || medicalFacility === void 0 ? void 0 : medicalFacility.name,
             date: appointment.date,
             description: appointment.description,
             category: appointment.category,

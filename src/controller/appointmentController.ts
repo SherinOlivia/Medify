@@ -42,7 +42,7 @@ const createAppointment = async (req: Request, res: Response) => {
             _id: appointment._id,
             patient: patientData?.first_name + " " + patientData?.last_name,
             doctor: doctorData?.first_name + " " + doctorData?.last_name,
-            hospital: hospital?.name,
+            hospital: medicalFacility?.name,
             date: appointment.date,
             description: appointment.description,
             category: appointment.category,
