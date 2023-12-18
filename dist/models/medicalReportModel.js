@@ -45,8 +45,9 @@ const medicalReportSchema = new mongoose_1.Schema({
     doctor: { type: mongoose_1.Types.ObjectId, ref: medicalPersonnelModel_1.default, required: true },
     patient: { type: mongoose_1.Types.ObjectId, ref: userModel_1.default, required: true },
     hospital: { type: mongoose_1.Types.ObjectId, ref: medicalFacilityModel_1.default, required: true },
-    date: { type: Date, default: Date.now, required: true },
-    doctorNote: { type: String },
+    appointmentDate: { type: Date, ref: medicalFacilityModel_1.default, required: true },
+    reportDate: { type: Date, default: Date.now, required: true },
+    doctor_note: { type: String },
     category: { type: String, required: true },
     description: { type: String, required: true },
 }, {
@@ -64,6 +65,7 @@ medicalReportSchema.pre('save', function (next) {
             this.hospital = appointment.hospital;
             this.category = appointment.category;
             this.description = appointment.description;
+            this.appointmentDate = appointment.date;
             next();
         }
         catch (error) {

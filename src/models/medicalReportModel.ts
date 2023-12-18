@@ -10,8 +10,9 @@ const medicalReportSchema = new Schema(
     doctor: { type: Types.ObjectId, ref: MedicalPersonnelModel, required: true },
     patient: { type: Types.ObjectId, ref: UserModel, required: true },
     hospital: { type: Types.ObjectId, ref: MedicalFacilityModel, required: true },
-    date: { type: Date, default: Date.now, required: true },
-    doctorNote: { type: String },
+    appointmentDate: { type: Date, ref: MedicalFacilityModel, required: true },
+    reportDate: { type: Date, default: Date.now, required: true },
+    doctor_note: { type: String },
     category: { type: String, required: true },
     description: { type: String, required: true },
   },
@@ -33,6 +34,7 @@ medicalReportSchema.pre('save', async function (next) {
     this.hospital = appointment.hospital;
     this.category = appointment.category;
     this.description = appointment.description;
+    this.appointmentDate = appointment.date;
 
     next();
   } catch (error) {
