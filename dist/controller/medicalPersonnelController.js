@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePersonnel = exports.getPersonnelsList = exports.getDoctorsList = exports.getMedicalPersonnelProfile = exports.getDoctorProfile = void 0;
+exports.updatePersonnel = exports.getPersonnelsList = exports.getMedicalAdminList = exports.getDoctorsList = exports.getMedicalPersonnelProfile = exports.getDoctorProfile = void 0;
 const medicalPersonnelModel_1 = __importDefault(require("../models/medicalPersonnelModel"));
 const errorHandling_1 = require("./errorHandling");
 const getDoctorProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -73,6 +73,20 @@ const getDoctorsList = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getDoctorsList = getDoctorsList;
+const getMedicalAdminList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const medical_admins = yield medicalPersonnelModel_1.default.find({ role: 'medical_admin' }).select('-password');
+        return res.status(200).json((0, errorHandling_1.errorHandling)({
+            message: "List of Medical Admins",
+            data: medical_admins
+        }, null));
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json((0, errorHandling_1.errorHandling)(null, 'Internal Server Error.'));
+    }
+});
+exports.getMedicalAdminList = getMedicalAdminList;
 const getPersonnelsList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const personnels = yield medicalPersonnelModel_1.default.find().select('-password');
@@ -88,15 +102,21 @@ const getPersonnelsList = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.getPersonnelsList = getPersonnelsList;
 const updatePersonnel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = req.params.personnelId;
+    var _b;
+    const personnelId = (_b = req.user) === null || _b === void 0 ? void 0 : _b.id;
     try {
-        const personnel = yield medicalPersonnelModel_1.default.findByIdAndUpdate(id, { $set: req.body }, { new: true });
-        res.status(200).json({
-            message: 'Data successfully Updated',
-            data: personnel,
-        });
+        const personnel = yield medicalPersonnelModel_1.default.findById(personnelId);
+        if (!personnel) {
+            return res.status(403).json((0, errorHandling_1.errorHandling)(null, 'Forbidden Access'));
+        }
+        const updatedPersonnel = yield medicalPersonnelModel_1.default.findByIdAndUpdate(personnelId, { $set: req.body }, { new: true });
+        return res.status(200).json((0, errorHandling_1.errorHandling)({
+            message: 'Personnel Data successfully Updated',
+            data: updatedPersonnel,
+        }, null));
     }
     catch (error) {
+        console.error(error);
         return res.status(500).json((0, errorHandling_1.errorHandling)(null, 'Internal Server Error.'));
     }
 });

@@ -8,12 +8,10 @@ const getMedicalFacilityProfile = async (req: Request, res: Response) => {
         const medicalFacility = await MedicalFacilityModel.findById(facilityId);
 
         if (medicalFacility) {
-            return res.status(200).json(
-                errorHandling({
+            return res.status(200).json(errorHandling({
                     message: `${medicalFacility.name}'s Profile`,
                     data: medicalFacility,
-                },
-                null)
+                }, null)
             );
         } else {
             return res.status(404).json(errorHandling(null, 'Medical facility not found.'));
@@ -28,12 +26,10 @@ const getMedicalFacilitiesList = async (req: Request, res: Response) => {
     try {
         const medicalFacilities = await MedicalFacilityModel.find();
 
-        return res.status(200).json(
-            errorHandling({
+        return res.status(200).json(errorHandling({
                 message: 'List of Medical Facilities',
                 data: medicalFacilities,
-            },
-            null)
+            }, null)
         );
     } catch (error) {
         console.error(error);

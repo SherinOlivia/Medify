@@ -1,6 +1,8 @@
 # Medify-BE
 Application where patients can keep track of their medical histories, book a doctor appointment, and consult online. Built using Typescript and Mongodb
 
+## Project Features
+
 ## Sample Accounts
 ```JSON
 Patient:
@@ -33,3 +35,6 @@ Doctor:
     "password": "doctor1234"
 ```
 <br>
+
+## Postman Documentation
+<a href="https://documenter.getpostman.com/view/29093953/2s9Ykkei6w">Medify</a>

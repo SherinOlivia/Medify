@@ -68,24 +68,51 @@ const getUsersList = async (req: Request, res: Response) => {
     }
 };
 
-const updateUser = async (req: Request, res: Response) => {
-    const id = req.params.userId
+const getPatientsList = async (req: Request, res: Response) => {
+    try {
+      const patients = await UserModel.find({ role: 'patient' }).select('-password');
+  
+      return res.status(200).json(
+        errorHandling({
+          message: 'Patients List',
+          data: patients,
+        },
+        null)
+      );
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
+    }
+  };
+
+  const updateUser = async (req: Request, res: Response) => {
+    const userId = req.user?.id;
+
+    if (!userId) {
+        return res.status(401).json(errorHandling(null, 'Unauthorized: Please Login First!!'));
+    }
 
     try {
-        const user = await UserModel.findByIdAndUpdate(id, 
-            {$set: req.body},
-            {new: true}
+        const user = await UserModel.findByIdAndUpdate(
+            userId,
+            { $set: req.body },
+            { new: true }
         );
 
-        res.status(200).json({
-            message: 'Data successfully Updated',
-            data: user,
-        });
+        if (!user) {
+            return res.status(404).json(errorHandling(null, 'User not found.'));
+        }
+
+        return res.status(200).json(errorHandling({
+              message: 'Patient Data successfully updated',
+              data: user,
+            }, null)
+          );
 
     } catch (error) {
+        console.error(error);
         return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
     }
 }
 
-
-export { getUserProfileByAdmin, getUserProfile, getUsersList, updateUser };
+export { getUserProfileByAdmin, getUserProfile, getUsersList, getPatientsList, updateUser };

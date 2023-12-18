@@ -9,10 +9,7 @@ const mongoMiddleware = async (req: Request, res: Response, next: NextFunction) 
 
     try {
         console.log("MongoDB Connection Start..!");
-        client = await mongoose.connect(uri), {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        };
+        client = await mongoose.connect(uri);
 
         if (client.connection.readyState === 1) {
             const db: mongoose.Connection = client.connection;
