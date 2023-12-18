@@ -1,17 +1,15 @@
 import express from 'express';
-import mongoMiddleware from './middleware/mongoMiddleware'
 import router from './router/mainRouter';
 import 'dotenv/config'
 import insertAdmin from './config/superAdmin';
-import cookieMiddleware from './middleware/cookieMiddleware';
+import appMiddleware from './middleware';
 
 const port = process.env.PORT;
 const app = express()
 
 app.use(express.json())
 
-app.use(mongoMiddleware)
-cookieMiddleware(app)
+appMiddleware(app)
 app.use(router)
 
 // super admin account:
