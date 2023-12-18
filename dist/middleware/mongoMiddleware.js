@@ -19,10 +19,7 @@ const mongoMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     let client = null;
     try {
         console.log("MongoDB Connection Start..!");
-        client = yield mongoose_1.default.connect(uri), {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        };
+        client = yield mongoose_1.default.connect(uri);
         if (client.connection.readyState === 1) {
             const db = client.connection;
             req.db = db;
