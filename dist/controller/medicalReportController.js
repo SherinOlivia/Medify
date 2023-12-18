@@ -17,24 +17,47 @@ const medicalReportModel_1 = __importDefault(require("../models/medicalReportMod
 const appointmentModel_1 = __importDefault(require("../models/appointmentModel"));
 const errorHandling_1 = require("./errorHandling");
 const medicalPersonnelModel_1 = __importDefault(require("../models/medicalPersonnelModel"));
+const userModel_1 = __importDefault(require("../models/userModel"));
+const medicalFacilityModel_1 = __importDefault(require("../models/medicalFacilityModel"));
 const createMedicalReport = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { appointmentId, doctorNote } = req.body;
-        if (!appointmentId || !doctorNote) {
+        const { appointmentId, doctor_note } = req.body;
+        if (!appointmentId || !doctor_note) {
             return res.status(400).json((0, errorHandling_1.errorHandling)(null, 'Invalid medical report data.'));
         }
         const appointment = yield appointmentModel_1.default.findById(appointmentId);
         if (!appointment) {
             return res.status(404).json((0, errorHandling_1.errorHandling)(null, 'Associated appointment not found.'));
         }
+        const reportDate = new Date();
         const newMedicalReport = new medicalReportModel_1.default({
             appointment: appointmentId,
-            doctorNote,
+            doctor: appointment.doctor,
+            patient: appointment.patient,
+            hospital: appointment.hospital,
+            category: appointment.category,
+            description: appointment.description,
+            appointmentDate: appointment.date,
+            reportDate,
+            doctor_note,
         });
-        const savedReport = yield newMedicalReport.save();
+        yield newMedicalReport.save();
+        const doctor = yield medicalPersonnelModel_1.default.findById(appointment.doctor);
+        const patient = yield userModel_1.default.findById(appointment.patient);
+        const hospital = yield medicalFacilityModel_1.default.findById(appointment.hospital);
+        const reportData = {
+            reportDate,
+            appointment,
+            appointmentDate: appointment.date,
+            category: appointment.category,
+            patient: (patient === null || patient === void 0 ? void 0 : patient.first_name) + " " + (patient === null || patient === void 0 ? void 0 : patient.last_name),
+            doctor: (doctor === null || doctor === void 0 ? void 0 : doctor.first_name) + " " + (doctor === null || doctor === void 0 ? void 0 : doctor.last_name),
+            hospital: hospital === null || hospital === void 0 ? void 0 : hospital.name,
+            doctor_note,
+        };
         return res.status(201).json((0, errorHandling_1.errorHandling)({
             message: 'Medical report successfully created',
-            data: savedReport,
+            data: reportData,
         }, null));
     }
     catch (error) {
@@ -63,9 +86,28 @@ const getMedicalReports = (req, res) => __awaiter(void 0, void 0, void 0, functi
         else {
             return res.status(403).json((0, errorHandling_1.errorHandling)(null, 'Forbidden Access'));
         }
+        const reportData = [];
+        for (const report of medicalReports) {
+            const appointment = yield appointmentModel_1.default.findById(report.appointment);
+            const doctor = yield medicalPersonnelModel_1.default.findById(appointment === null || appointment === void 0 ? void 0 : appointment.doctor);
+            const patient = yield userModel_1.default.findById(appointment === null || appointment === void 0 ? void 0 : appointment.patient);
+            const hospital = yield medicalFacilityModel_1.default.findById(appointment === null || appointment === void 0 ? void 0 : appointment.hospital);
+            const formattedReport = {
+                _id: report._id,
+                appointment: report.appointment,
+                appointmentDate: report.appointmentDate,
+                reportDate: report.reportDate,
+                category: report.category,
+                patient: (patient === null || patient === void 0 ? void 0 : patient.first_name) + " " + (patient === null || patient === void 0 ? void 0 : patient.last_name),
+                doctor: (doctor === null || doctor === void 0 ? void 0 : doctor.first_name) + " " + (doctor === null || doctor === void 0 ? void 0 : doctor.last_name),
+                hospital: hospital === null || hospital === void 0 ? void 0 : hospital.name,
+                doctor_note: report.doctor_note,
+            };
+            reportData.push(formattedReport);
+        }
         return res.status(200).json((0, errorHandling_1.errorHandling)({
             message: 'List of Medical Reports',
-            data: medicalReports,
+            data: reportData,
         }, null));
     }
     catch (error) {
