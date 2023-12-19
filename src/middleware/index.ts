@@ -17,6 +17,6 @@ const appMiddleware = (app: Application) => {
     expressMiddleware(app);
     cookieMiddleware(app);
     corsMiddleware(app);
-}
+};
 
 export default appMiddleware
