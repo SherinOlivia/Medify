@@ -6,3 +6,5 @@ export { default as userRouter } from './userRouter'
 
 export { default as appointmentRouter } from './appointmentRouter'
 export { default as medicalReportRouter } from './medicalReportRouter'
+export { default as chatRouter } from './chatRouter'
+export { default as messageRouter } from './messageRouter'
