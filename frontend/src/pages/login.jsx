@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import { useContext } from 'react';
 import { Button, Alert, Form, Row, Col, Stack } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
-import medify from '../assets/medify.svg'
-import "../index.css"
+import medify from '../assets/medify.svg';
+import "../index.css";
 
 const Login = () => {
     const {
@@ -13,6 +14,12 @@ const Login = () => {
         loginInfo,
         updateLoginInfo,
     } = useContext(AuthContext);
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        loginUser(loginInfo); // Pass the loginInfo directly
+    };
+
 
     return (
         <Form onSubmit={loginUser} className="d-flex justify-content-center align-items-center" style={{ height: '70vh' }}>
@@ -27,7 +34,7 @@ const Login = () => {
                                 {isLoginLoading ? "Getting You In" : "Login"}
                             </Button>
                             {loginError?.error && (
-                                <Alert variant='danger'>
+                                <Alert variant='danger' className="small-alert mt-3">
                                     <p>{loginError?.message}</p>
                                 </Alert>
                             )}

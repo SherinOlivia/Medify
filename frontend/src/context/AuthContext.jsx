@@ -98,7 +98,8 @@ export const AuthContextProvider = ({ children }) => {
             navigate('/login');
         } catch (error) {
             console.error("An error occurred during registration:", error);
-            setRegisterError({ error: true, message: "An unexpected error occurred." });
+            setRegisterError({ error: true, message: error.message || "An unexpected error occurred" });
+            setIsRegisterLoading(false);
         }
     }, [registerInfo, navigate]);
 
@@ -118,8 +119,9 @@ export const AuthContextProvider = ({ children }) => {
             navigate('/login');
         } catch (error) {
             console.error("An error occurred during registration:", error);
-            setRegisterError({ error: true, message: "An unexpected error occurred." });
-        }
+            setRegisterError({ error: true, message: error.message || "An unexpected error occurred" });
+            setIsRegisterLoading(false);
+        }loginError
     }, [registerInfoByAdmin, navigate]);
 
     const updateRegisterInfoByAdmin = useCallback((info) => {
@@ -141,7 +143,8 @@ export const AuthContextProvider = ({ children }) => {
             navigate('/login'); 
         } catch (error) {
             console.error("An error occurred during registration:", error);
-            setRegisterError({ error: true, message: "An unexpected error occurred." });
+            setRegisterError({ error: true, message: error.message || "An unexpected error occurred" });
+            setIsRegisterLoading(false);
         }
     }, [registerInfoMedicalPersonnel, navigate]);
 
@@ -163,7 +166,8 @@ export const AuthContextProvider = ({ children }) => {
             }
             navigate('/login');
         } catch (error) {
-            setRegisterError({ error: true, message: "An unexpected error occurred." });
+            setRegisterError({ error: true, message: error.message || "An unexpected error occurred" });
+            setIsRegisterLoading(false);
         }
     }, [registerInfoMedicalFacility, navigate]);
 
@@ -211,34 +215,35 @@ export const AuthContextProvider = ({ children }) => {
 
 
     const loginUser = useCallback(async (e) => {
-        e.preventDefault();
-        setIsLoginLoading(true);
-        setLoginError(null);
-    
-        try {
-            const response = await postRequest(`${baseUrl}/api/v1/auth/login`, loginInfo, {
-                credentials: 'include'
+    e.preventDefault();
+    setIsLoginLoading(true);
+    setLoginError(null);
+
+    try {
+        const response = await postRequest(`${baseUrl}/api/v1/auth/login`, loginInfo);
+
+        if (response.error) {
+            // Handle the returned error
+            setLoginError({
+                error: true,
+                message: response.message // Set the error message from the response
             });
-    
-            if (response.ok) {
-                const responseData = await response.json(); // Read the response body
-                console.log("Login response data:", responseData); // Log the response data
-    
-                localStorage.setItem("User", JSON.stringify(responseData));
-                setUser(responseData);
-                navigate('/chat');
-            } else {
-                const errorData = await response.json(); // Read the response body for error details
-                setLoginError(errorData);
-                console.error("Login failed:", errorData);
-            }
-        } catch (error) {
-            console.error("An error occurred during login:", error);
-            setLoginError({ error: true, message: "An unexpected error occurred." });
-        } finally {
-            setIsLoginLoading(false);
+        } else {
+            const responseData = await response.json(); // Parse JSON response
+            localStorage.setItem("User", JSON.stringify(responseData));
+            setUser(responseData);
+            navigate('/chat'); // navigate to chat on successful login
         }
-    }, [loginInfo, navigate]);
+    } catch (error) {
+        setLoginError({
+            error: true,
+            message: error.message || "An unexpected error occurred"
+        });
+    } finally {
+        setIsLoginLoading(false);
+    }
+}, [loginInfo, navigate]);
+
     
 
     const logoutUser = useCallback(() => {

@@ -6,21 +6,25 @@ export async function postRequest(url, data) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // Include other headers as needed
             },
+            credentials: 'include', // if needed
             body: JSON.stringify(data),
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            const errorBody = await response.json();
+            throw new Error(errorBody.data || errorBody.message);
         }
 
         return response;
     } catch (error) {
         console.error('Error in postRequest:', error);
-        throw error; // Re-throw the error to be caught in the calling function
+        throw error; // Consider creating a standardized error object
     }
 }
+
+
+
 
 export const getRequest = async (url) => {
     try {
@@ -44,6 +48,5 @@ export const getRequest = async (url) => {
         return { error: true, message: `Error fetching data: ${error.message || ''}` };
     }
 }
-
 
 

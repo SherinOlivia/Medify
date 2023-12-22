@@ -14,7 +14,7 @@ const NavBar = () => {
             <Container>
                 <Navbar.Brand as={Link} to="/" className="d-flex align-items-center navbar-brand-custom">
                     <img src={medify} alt="Medify" style={{ height: "4rem", marginRight: "1rem" }}/>
-                    <span style={{ fontSize: "1.75rem", fontWeight: "700" }}>HaloDog</span>
+                    <span style={{ fontSize: "1.75rem", fontWeight: "700" }}>MEDIFY</span>
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

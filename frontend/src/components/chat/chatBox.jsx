@@ -17,14 +17,23 @@ const ChatBox = () => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
+    useEffect(() => {
+        // The useEffect will automatically trigger when currentChat._id changes
+        // No need for a separate loadMessagesForChat function
+    }, [currentChat._id]);
+
     const handleSendMessage = async () => {
         if (textMessage.trim() === '') return;
-
-        await sendTextMessage(textMessage, currentChat._id);
-        setTextMessage('');
+    
+        try {
+            await sendTextMessage(textMessage, currentChat._id);
+            setTextMessage('');
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
     };
 
-    if (!recipientUser) {
+    if (!recipientUser || !currentChat) {
         return (
             <p className="text-light" style={{ textAlign: "center", width: "100%" }}>
                 No Conversation Selected Yet ....
@@ -38,23 +47,28 @@ const ChatBox = () => {
         );
     }
 
+    // Safely accessing username
+    const username = recipientUser?.data?.username || recipientUser?.username;
+
     return (
         <Stack gap={4} className="chat-box text-light">
             <div className="chat-header">
-                <strong>{recipientUser?.data.username}</strong>
+                <strong>{username}</strong>
             </div>
             <Stack gap={3} className="messages">
-                {messages && messages.map((message, index) => (
-                    <Stack key={index} 
-                        className={`${message?.senderId === user?._id ? "message self align-self-end flex-grow-0" : "message align-self-start flex-grow-0"}`}
-                        ref={scroll}
-                    >
-                        <span>{message.text}</span>
-                        <span className="message-footer">
-                            {moment(message.createdAt).calendar()}
-                        </span>
-                    </Stack>
-                ))}
+                {messages && messages.map((message, index) => {
+                    return (
+                        <Stack key={index}
+                            className={`${message?.senderId === user?._id ? "message self align-self-end flex-grow-0" : "message align-self-start flex-grow-0"}`}
+                            ref={scrollRef}
+                        >
+                            <span>{message?.text}</span>
+                            <span className="message-footer">
+                                {moment(message?.createdAt).calendar()}
+                            </span>
+                        </Stack>
+                    )
+                })}
             </Stack>
             <Stack direction="horizontal" gap={3} className="chat-input-emoji flex-grow-0">
                 <InputEmoji value={textMessage} onChange={setTextMessage} borderColor="rgba(72,112,225,0.2)" />

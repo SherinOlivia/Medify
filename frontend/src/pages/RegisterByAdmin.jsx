@@ -33,7 +33,7 @@ const RegisterByAdmin = () => {
                             {isRegisterLoading ? "Creating Your Account..." : "Register"}
                         </Button>
                         {registerError?.error && (
-                            <Alert variant='danger'>
+                            <Alert variant='danger' className='alert-box'>
                                 <p>{registerError?.message}</p>
                             </Alert>
                         )}

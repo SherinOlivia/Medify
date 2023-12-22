@@ -14,7 +14,6 @@ const RegisterMedicalFacility = () => {
     
     return (
         <Form onSubmit={handleSubmit} className="d-flex justify-content-center align-items-center" style={{ height: '70vh' }}>
-            {/* Form fields go here */}
             <Col md={6} lg={4}>
                 <div className="register-form-container">
                     <Stack gap={3}>
@@ -30,7 +29,6 @@ const RegisterMedicalFacility = () => {
                         <Button className="register-form-button" type='submit'>
                             {isRegisterLoading ? "Creating Your Account..." : "Register"}
                         </Button>
-                        {/* Error Message */}
                         {registerError?.error && (
                             <Alert variant='danger'>
                                 <p>{registerError?.message}</p>

@@ -7,9 +7,17 @@ body {
 
 
 /* App.css */
+.small-alert {
+  padding-left: 0.4rem;
+  font-size: 0.875rem;
+  margin-bottom: 0.1rem;
+  color: tomato;
+  font-weight: 500;
+}
+
 .register-form-container {
   background-color: #f8f9fa; /* Light background color */
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* subtle shadow */
 }
@@ -45,7 +53,6 @@ body {
 /* All users */
 .all-users {
   display: flex;
-  margin-bottom: 1rem;
 }
 
 .single-user {
@@ -113,7 +120,7 @@ body {
 }
 
 .messages-box {
-  height: 85vh;
+  height: 77vh;
   width:340px;
 }
 
