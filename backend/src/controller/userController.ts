@@ -80,22 +80,22 @@ const getUsersList = async (req: Request, res: Response) => {
 
 const getPatientsList = async (req: Request, res: Response) => {
     try {
-      const patients = await UserModel.find({ role: 'patient' }).select('-password');
-  
-      return res.status(200).json(
-        errorHandling({
-          message: 'Patients List',
-          data: patients,
-        },
-        null)
-      );
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
-    }
-  };
+        const patients = await UserModel.find({ role: 'patient' }).select('-password');
 
-  const updateUser = async (req: Request, res: Response) => {
+        return res.status(200).json(
+            errorHandling({
+                message: 'Patients List',
+                data: patients,
+            },
+        null)
+        );
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
+    }
+};
+
+const updateUser = async (req: Request, res: Response) => {
     const userId = req.user?.id;
 
     if (!userId) {
