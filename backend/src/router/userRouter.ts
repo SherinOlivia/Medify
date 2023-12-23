@@ -1,6 +1,6 @@
 import express from 'express'
 import authorMiddleware from '../middleware/authorizationMiddleware';
-import { getPatientsList, getUserProfile, getUserProfileByAdmin, getUsersList, updateUser } from '../controller/userController';
+import { getPatientsList, getUserProfile, getUserProfileByAdmin, getUsersList, updateUser, getUserPatient } from '../controller/userController';
 
 const userRouter = express.Router()
 
@@ -9,5 +9,6 @@ userRouter.get('/profile/:userId', authorMiddleware(['staff','admin']), getUserP
 userRouter.get('/list', authorMiddleware(['staff','admin']), getUsersList)
 userRouter.get('/patient/list', authorMiddleware(['staff','admin']), getPatientsList)
 userRouter.put('/update', updateUser);
+userRouter.get('/patients', getUserPatient);
 
 export default userRouter;

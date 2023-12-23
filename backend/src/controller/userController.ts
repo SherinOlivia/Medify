@@ -24,6 +24,16 @@ const getUserProfileByAdmin = async (req: Request, res: Response) => {
     }
 };
 
+const getUserPatient = async (req: Request, res: Response) => {
+    try {
+        const patients = await UserModel.find({ role: 'patient' }).select('-password');
+        return res.status(200).json({ data: patients }); // Change 'patients' to 'data'
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(errorHandling(null, 'Internal Server Error.'));
+    }
+};
+
 const getUserProfile = async (req: Request, res: Response) => {
     try {
         const userId = req.user?.id;
@@ -104,10 +114,10 @@ const getPatientsList = async (req: Request, res: Response) => {
         }
 
         return res.status(200).json(errorHandling({
-              message: 'Patient Data successfully updated',
-              data: user,
+                message: 'Patient Data successfully updated',
+                data: user,
             }, null)
-          );
+        );
 
     } catch (error) {
         console.error(error);
@@ -115,4 +125,4 @@ const getPatientsList = async (req: Request, res: Response) => {
     }
 }
 
-export { getUserProfileByAdmin, getUserProfile, getUsersList, getPatientsList, updateUser };
+export { getUserProfileByAdmin, getUserProfile, getUsersList, getPatientsList, updateUser, getUserPatient };
