@@ -52,6 +52,8 @@ Doctor:
 
 <a href="https://documenter.getpostman.com/view/29093953/2s9Ykkei6w">Postman Documentation</a>
 
+<a href="https://docs.google.com/presentation/d/1go7B_Oom29Qz7pXoP83a3XQpVzEtZodW/edit?usp=drive_link&ouid=103234162257453132089&rtpof=true&sd=true">Deck</a>
+
 ## Team Members
 **Sherin Olivia** : Leader, Product Manager, Backend
 
@@ -59,3 +61,4 @@ Doctor:
 
 **Hanan Wijaya** : Frontend
 
+### Security Result
