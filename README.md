@@ -52,4 +52,10 @@ Doctor:
 
 <a href="https://documenter.getpostman.com/view/29093953/2s9Ykkei6w">Postman Documentation</a>
 
+## Team Members
+**Sherin Olivia** : Leader, Product Manager, Backend
+
+**Hilman Syarifudin F** : Backend (Livechat), Frontend
+
+**Hanan Wijaya** : Frontend
 
