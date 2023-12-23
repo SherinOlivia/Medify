@@ -2,10 +2,44 @@
 Application where patients can keep track of their medical histories, book a doctor appointment, and consult online. Built using Typescript and Mongodb
 
 ## Project Features
-- Online Consultation (Free of charge)
+- Livechat/Online Consultation (Free of charge)
 - Appointment Scheduling (Commission-based on contract between Medify and Affiliated Medical Facilities)
-- Post-Appointment Medical Report 
+- Post-Appointment Medical Report
+- Separate/Intricate Registration process by admin
+- Reset Password
+- Profiles & Lists for Users, Medical Personnels and Medical Facilities
+- Admin Dashboard
   
+## Tools used
+
+<strong>Backend</strong>
+- Typescript
+- Mongoose (& Mongodb)
+- Jsonwebtoken
+- date-fns
+- helmet
+- morgan
+- bcrypt
+- node-cache
+- nodemailer
+- socket.io
+- uuid
+- validator
+- cors
+- cookie-parser
+- dotenv
+
+<strong>Frontend</strong>
+- React
+- vite
+- Javascript
+- bootstrap
+- socket.io-client
+- lodash
+- moment
+- dotenv
+- React Router
+
 ## Sample Accounts
 ```JSON
 Patient:
@@ -62,3 +96,4 @@ Doctor:
 **Hanan Wijaya** : Frontend
 
 ### Security Result
+[![Medify-Securityheader](https://github.com/SherinOlivia/Medify/blob/main/documentation/medify-security.jpg?raw=true)
